@@ -25,14 +25,11 @@ import { getUser, getUserUpdatePending } from '../selectors';
 const styles = theme => ({
   avatarContainer: {
     padding: theme.spacing.unit * 2,
+    alignSelf: 'center',
   },
   avatar: {
-    width: theme.spacing.unit * 8,
-    height: theme.spacing.unit * 8,
-    margin: 'auto',
-  },
-  name: {
-    textAlign: 'center',
+    width: theme.spacing.unit * 12,
+    height: theme.spacing.unit * 12,
   },
   fieldsContainer: {
     padding: theme.spacing.unit * 2,
@@ -150,12 +147,12 @@ class Profile extends React.Component {
     return (
       <Grid container className={classes.container}>
         <Grid item xs={12} md={3} className={classes.avatarContainer}>
-          <Grid container direction="column">
+          <Grid container direction="column" alignItems="center">
             <Grid item>
               <Avatar alt="" src="" className={classes.avatar} />
             </Grid>
             <Grid item zeroMinWidth>
-              <Typography component="h3" variant="subtitle1" className={classes.name} noWrap>
+              <Typography component="h3" variant="subtitle1" noWrap>
                 {`${user.get('firstName')} ${user.get('lastName')}`}
               </Typography>
             </Grid>
@@ -238,7 +235,6 @@ Profile.propTypes = {
   classes: PropTypes.shape({
     avatarContainer: PropTypes.string,
     avatar: PropTypes.string,
-    name: PropTypes.string,
     fieldsContainer: PropTypes.string,
     buttonContainer: PropTypes.string,
   }).isRequired,
