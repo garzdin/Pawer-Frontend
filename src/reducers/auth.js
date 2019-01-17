@@ -7,15 +7,9 @@ import {
   USER_SIGNIN_FAILURE,
   USER_SIGNOUT_REQUEST,
   USER_SIGNOUT_SUCCESS,
-  USER_UPDATE_EMAIL_REQUEST,
-  USER_UPDATE_EMAIL_SUCCESS,
-  USER_UPDATE_EMAIL_FAILURE,
-  USER_UPDATE_FIRST_NAME_REQUEST,
-  USER_UPDATE_FIRST_NAME_SUCCESS,
-  USER_UPDATE_FIRST_NAME_FAILURE,
-  USER_UPDATE_LAST_NAME_REQUEST,
-  USER_UPDATE_LAST_NAME_SUCCESS,
-  USER_UPDATE_LAST_NAME_FAILURE,
+  USER_UPDATE_REQUEST,
+  USER_UPDATE_SUCCESS,
+  USER_UPDATE_FAILURE,
 } from '../actions/types';
 
 import { currentUser } from '../services/parse';
@@ -126,7 +120,7 @@ export default function (state = initialState, action) {
         },
       };
     }
-    case USER_UPDATE_EMAIL_REQUEST: {
+    case USER_UPDATE_REQUEST: {
       return {
         ...state,
         updating: {
@@ -135,7 +129,7 @@ export default function (state = initialState, action) {
         },
       };
     }
-    case USER_UPDATE_EMAIL_SUCCESS: {
+    case USER_UPDATE_SUCCESS: {
       const { user } = action.payload;
 
       return {
@@ -147,73 +141,7 @@ export default function (state = initialState, action) {
         },
       };
     }
-    case USER_UPDATE_EMAIL_FAILURE: {
-      const { error } = action.payload;
-
-      return {
-        ...state,
-        updating: {
-          ...state.updating,
-          pending: false,
-          error,
-        },
-      };
-    }
-    case USER_UPDATE_FIRST_NAME_REQUEST: {
-      return {
-        ...state,
-        updating: {
-          ...state.updating,
-          pending: true,
-        },
-      };
-    }
-    case USER_UPDATE_FIRST_NAME_SUCCESS: {
-      const { user } = action.payload;
-
-      return {
-        ...state,
-        user,
-        updating: {
-          ...state.updating,
-          pending: false,
-        },
-      };
-    }
-    case USER_UPDATE_FIRST_NAME_FAILURE: {
-      const { error } = action.payload;
-
-      return {
-        ...state,
-        updating: {
-          ...state.updating,
-          pending: false,
-          error,
-        },
-      };
-    }
-    case USER_UPDATE_LAST_NAME_REQUEST: {
-      return {
-        ...state,
-        updating: {
-          ...state.updating,
-          pending: true,
-        },
-      };
-    }
-    case USER_UPDATE_LAST_NAME_SUCCESS: {
-      const { user } = action.payload;
-
-      return {
-        ...state,
-        user,
-        updating: {
-          ...state.updating,
-          pending: false,
-        },
-      };
-    }
-    case USER_UPDATE_LAST_NAME_FAILURE: {
+    case USER_UPDATE_FAILURE: {
       const { error } = action.payload;
 
       return {
