@@ -35,8 +35,8 @@ export function signUp(email, password) {
     } catch (error) {
       dispatch(signUpFailure(error));
     }
-  }
-};
+  };
+}
 
 export function signIn(username, password) {
   return async (dispatch) => {
@@ -49,8 +49,8 @@ export function signIn(username, password) {
     } catch (error) {
       dispatch(signInFailure(error));
     }
-  }
-};
+  };
+}
 
 export function signOut() {
   return async (dispatch) => {
@@ -59,27 +59,27 @@ export function signOut() {
     await Parse.User.logOut();
 
     dispatch(signOutSuccess());
-  }
+  };
 }
 
-export function updateEmail(email) {
+export function updateEmail(user, email) {
   return async (dispatch) => {
     dispatch(updateEmailRequest());
 
-    const result = currentUser.setEmail(email);
+    const result = user.setEmail(email);
 
     if (result) {
       try {
-        await currentUser.save();
+        await user.save();
 
-        dispatch(updateEmailSuccess(currentUser));
+        dispatch(updateEmailSuccess(user));
       } catch (error) {
         dispatch(updateEmailFailure(error));
       }
     } else {
       dispatch(updateEmailFailure({ message: 'Couldn\'t update email.' }));
     }
-  }
+  };
 }
 
 export default Parse;

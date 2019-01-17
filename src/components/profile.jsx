@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { withRouter } from "react-router-dom";
+import { withRouter } from 'react-router-dom';
 
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
 
 import withStyles from '@material-ui/core/styles/withStyles';
 
@@ -19,21 +19,21 @@ import { updateEmail } from '../services/parse';
 
 const styles = theme => ({
   avatarContainer: {
-    padding: 12,
+    padding: theme.spacing.unit * 2,
   },
   avatar: {
-    width: 60,
-    height: 60,
+    width: theme.spacing.unit * 8,
+    height: theme.spacing.unit * 8,
     margin: 'auto',
   },
   name: {
     textAlign: 'center',
   },
   fieldsContainer: {
-    padding: 12,
+    padding: theme.spacing.unit * 2,
   },
   buttonContainer: {
-    marginTop: 12,
+    marginTop: theme.spacing.unit * 2,
   },
 });
 
@@ -44,16 +44,12 @@ class Profile extends React.Component {
     const email = props.user.getEmail();
 
     this.state = {
-      email: email,
+      email,
     };
 
     this.onChange = this.onChange.bind(this);
-    this.setRef = this.setRef.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
-  }
-
-  setRef(name, r) {
-    this[name] = r;
+    this.setRef = this.setRef.bind(this);
   }
 
   onChange(name, e) {
@@ -69,8 +65,12 @@ class Profile extends React.Component {
     const oldEmail = user.getEmail();
 
     if (email !== oldEmail) {
-      dispatch(updateEmail(email));
+      dispatch(updateEmail(user, email));
     }
+  }
+
+  setRef(name, r) {
+    this[name] = r;
   }
 
   render() {
@@ -94,11 +94,11 @@ class Profile extends React.Component {
           </Grid>
         </Grid>
         <Grid item xs={12} md={9} className={classes.fieldsContainer}>
-          <form onSubmit={(e) => e.preventDefault()}>
+          <form onSubmit={e => e.preventDefault()}>
             <Grid container direction="column">
               <FormControl margin="dense" required fullWidth>
                 <InputLabel htmlFor="email">Email Address</InputLabel>
-                <Input ref={(r) => this.setRef('email', r)} onChange={(e) => this.onChange('email', e)} id="email" name="email" autoComplete="email" value={email} />
+                <Input ref={r => this.setRef('email', r)} onChange={e => this.onChange('email', e)} id="email" name="email" autoComplete="email" value={email} />
               </FormControl>
               <Grid container className={classes.buttonContainer}>
                 <Grid item xs={6} />
@@ -124,8 +124,25 @@ class Profile extends React.Component {
 }
 
 Profile.propTypes = {
-  classes: PropTypes.object.isRequired,
-  user: PropTypes.object,
+  classes: PropTypes.shape({
+    avatarContainer: PropTypes.string,
+    avatar: PropTypes.string,
+    name: PropTypes.string,
+    fieldsContainer: PropTypes.string,
+    buttonContainer: PropTypes.string,
+  }).isRequired,
+  dispatch: PropTypes.func.isRequired,
+  user: PropTypes.shape({
+    className: PropTypes.string,
+    id: PropTypes.string,
+    _localId: PropTypes.string,
+    _objCount: PropTypes.number,
+    getEmail: PropTypes.func,
+  }),
+};
+
+Profile.defaultProps = {
+  user: {},
 };
 
 export default withRouter(connect()(withStyles(styles)(Profile)));

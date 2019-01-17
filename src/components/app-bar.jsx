@@ -10,9 +10,9 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import Button from '@material-ui/core/Button';
 
-import { Link, withRouter } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom';
 
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
 
 import { mapStateToProps, mapDispatchToActions } from '../utils';
 
@@ -46,22 +46,17 @@ class AppBarContainer extends React.Component {
       anchorEl: null,
     };
 
-    this.handleChange = this.handleChange.bind(this);
     this.handleMenu = this.handleMenu.bind(this);
     this.handleClose = this.handleClose.bind(this);
   }
 
-  handleChange(event) {
-    this.setState({ auth: event.target.checked });
-  };
-
   handleMenu(event) {
     this.setState({ anchorEl: event.currentTarget });
-  };
+  }
 
   handleClose() {
     this.setState({ anchorEl: null });
-  };
+  }
 
   render() {
     const { classes, user } = this.props;
@@ -126,8 +121,21 @@ class AppBarContainer extends React.Component {
 }
 
 AppBarContainer.propTypes = {
-  classes: PropTypes.object.isRequired,
-  user: PropTypes.object,
+  classes: PropTypes.shape({
+    root: PropTypes.string,
+    grow: PropTypes.string,
+    link: PropTypes.string,
+  }).isRequired,
+  user: PropTypes.shape({
+    className: PropTypes.string,
+    id: PropTypes.string,
+    _localId: PropTypes.string,
+    _objCount: PropTypes.number,
+  }),
+};
+
+AppBarContainer.defaultProps = {
+  user: {},
 };
 
 export default withRouter(connect(selectors, actions)(withStyles(styles)(AppBarContainer)));

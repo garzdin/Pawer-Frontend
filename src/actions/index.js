@@ -10,23 +10,23 @@ import {
   USER_UPDATE_EMAIL_REQUEST,
   USER_UPDATE_EMAIL_SUCCESS,
   USER_UPDATE_EMAIL_FAILURE,
-} from "./types";
+} from './types';
 
 export const signUpRequest = () => ({
   type: USER_SIGNUP_REQUEST,
 });
 
-export const signUpSuccess = (user) => ({
+export const signUpSuccess = user => ({
   type: USER_SIGNUP_SUCCESS,
   payload: {
-    user: user,
+    user,
   },
 });
 
-export const signUpFailure = (error) => ({
+export const signUpFailure = error => ({
   type: USER_SIGNUP_FAILURE,
   payload: {
-    error: error,
+    error,
   },
 });
 
@@ -34,17 +34,17 @@ export const signInRequest = () => ({
   type: USER_SIGNIN_REQUEST,
 });
 
-export const signInSuccess = (user) => ({
+export const signInSuccess = user => ({
   type: USER_SIGNIN_SUCCESS,
   payload: {
-    user: user,
+    user,
   },
 });
 
-export const signInFailure = (error) => ({
+export const signInFailure = error => ({
   type: USER_SIGNIN_FAILURE,
   payload: {
-    error: error,
+    error,
   },
 });
 
@@ -56,20 +56,20 @@ export const signOutSuccess = () => ({
   type: USER_SIGNOUT_SUCCESS,
 });
 
-export const updateEmailRequest = (email) => ({
+export const updateEmailRequest = () => ({
   type: USER_UPDATE_EMAIL_REQUEST,
 });
 
-export const updateEmailSuccess = (user) => ({
+export const updateEmailSuccess = user => ({
   type: USER_UPDATE_EMAIL_SUCCESS,
   payload: {
-    user: user,
+    user,
   },
 });
 
-export const updateEmailFailure = (error) => ({
+export const updateEmailFailure = error => ({
   type: USER_UPDATE_EMAIL_FAILURE,
   payload: {
-    error: error,
+    error,
   },
 });

@@ -1,0 +1,13 @@
+{
+    "plugins": [
+        "import",
+        "jsx-a11y",
+        "react"
+    ],
+    "extends": [
+        "eslint:recommended",
+        "plugin:react/recommended",
+        "airbnb",
+    ],
+    "rules": {}
+}

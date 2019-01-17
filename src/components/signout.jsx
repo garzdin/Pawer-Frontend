@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Redirect, withRouter } from "react-router-dom";
+import { Redirect, withRouter } from 'react-router-dom';
 
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
 
 import { signOut } from '../services/parse';
 
@@ -21,7 +21,7 @@ class SignOut extends React.Component {
       <Redirect
         to={{
           pathname: '/signin',
-          state: { from: location }
+          state: { from: location },
         }}
       />
     );
@@ -29,7 +29,14 @@ class SignOut extends React.Component {
 }
 
 SignOut.propTypes = {
-  classes: PropTypes.object.isRequired,
+  dispatch: PropTypes.func.isRequired,
+  location: PropTypes.shape({
+    key: PropTypes.string,
+    pathname: PropTypes.string,
+    search: PropTypes.string,
+    hash: PropTypes.string,
+    state: PropTypes.object,
+  }).isRequired,
 };
 
 export default withRouter(connect()(withRouter(SignOut)));

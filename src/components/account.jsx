@@ -1,13 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import withStyles from '@material-ui/core/styles/withStyles';
 
+import Paper from '@material-ui/core/Paper';
+
 import Grid from '@material-ui/core/Grid';
+
 import MenuList from '@material-ui/core/MenuList';
 import MenuItem from '@material-ui/core/MenuItem';
-import Paper from '@material-ui/core/Paper';
+
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import PetsIcon from '@material-ui/icons/Pets';
 import SettingsIcon from '@material-ui/icons/Settings';
@@ -28,38 +33,35 @@ const config = [
     path: '/account/settings',
     icon: <SettingsIcon />,
   },
-]
+];
 
 const styles = theme => ({
   menuItem: {
     '&:focus': {
       backgroundColor: theme.palette.primary.main,
-      '& $primary, & $icon': {
-        color: theme.palette.common.white,
-      },
     },
   },
-  primary: {},
-  icon: {},
   container: {
     marginTop: '24px',
-  }
+  },
 });
 
 class Account extends React.Component {
   renderMenuItems() {
     const { classes, location } = this.props;
 
-    return config.map(({ text, path, icon }, index) => {
-      return (
-        <MenuItem key={index} className={classes.menuItem} selected={Boolean(location.pathname.match(path))}>
-          <ListItemIcon className={classes.icon}>
-            {icon}
-          </ListItemIcon>
-          <ListItemText classes={{ primary: classes.primary }} inset primary={text} />
-        </MenuItem>
-      );
-    })
+    return config.map(({ text, path, icon }) => (
+      <MenuItem
+        key={path}
+        className={classes.menuItem}
+        selected={Boolean(location.pathname.match(path))}
+      >
+        <ListItemIcon className={classes.icon}>
+          {icon}
+        </ListItemIcon>
+        <ListItemText classes={{ primary: classes.primary }} inset primary={text} />
+      </MenuItem>
+    ));
   }
 
   render() {
@@ -83,9 +85,22 @@ class Account extends React.Component {
 }
 
 Account.propTypes = {
-  classes: PropTypes.object.isRequired,
   children: PropTypes.node,
-  user: PropTypes.object,
+  location: PropTypes.shape({
+    key: PropTypes.string,
+    pathname: PropTypes.string,
+    search: PropTypes.string,
+    hash: PropTypes.string,
+    state: PropTypes.object,
+  }).isRequired,
+  classes: PropTypes.shape({
+    menuItem: PropTypes.string,
+    container: PropTypes.string,
+  }).isRequired,
+};
+
+Account.defaultProps = {
+  children: null,
 };
 
 export default withStyles(styles)(Account);

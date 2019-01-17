@@ -1,5 +1,5 @@
-import mapStateToProps from './mapStateToProps';
-import mapDispatchToActions from './mapDispatchToActions';
+import { mapStateToProps } from './mapStateToProps';
+import { mapDispatchToActions } from './mapDispatchToActions';
 
 export {
   mapStateToProps,

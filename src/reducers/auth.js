@@ -10,7 +10,7 @@ import {
   USER_UPDATE_EMAIL_REQUEST,
   USER_UPDATE_EMAIL_SUCCESS,
   USER_UPDATE_EMAIL_FAILURE,
-} from "../actions/types";
+} from '../actions/types';
 
 import { currentUser } from '../services/parse';
 
@@ -33,7 +33,7 @@ const initialState = {
   },
 };
 
-export default function(state = initialState, action) {
+export default function (state = initialState, action) {
   switch (action.type) {
     case USER_SIGNUP_REQUEST: {
       return {
@@ -41,7 +41,7 @@ export default function(state = initialState, action) {
         signUp: {
           ...state.signUp,
           pending: true,
-        }
+        },
       };
     }
     case USER_SIGNUP_SUCCESS: {
@@ -49,11 +49,11 @@ export default function(state = initialState, action) {
 
       return {
         ...state,
-        user: user,
+        user,
         signUp: {
           ...state.signUp,
           pending: false,
-        }
+        },
       };
     }
     case USER_SIGNUP_FAILURE: {
@@ -64,8 +64,8 @@ export default function(state = initialState, action) {
         signUp: {
           ...state.signUp,
           pending: false,
-          error: error,
-        }
+          error,
+        },
       };
     }
     case USER_SIGNIN_REQUEST: {
@@ -74,7 +74,7 @@ export default function(state = initialState, action) {
         signIn: {
           ...state.signIn,
           pending: true,
-        }
+        },
       };
     }
     case USER_SIGNIN_SUCCESS: {
@@ -82,11 +82,11 @@ export default function(state = initialState, action) {
 
       return {
         ...state,
-        user: user,
+        user,
         signIn: {
           ...state.signIn,
           pending: false,
-        }
+        },
       };
     }
     case USER_SIGNIN_FAILURE: {
@@ -97,8 +97,8 @@ export default function(state = initialState, action) {
         signIn: {
           ...state.signIn,
           pending: false,
-          error: error,
-        }
+          error,
+        },
       };
     }
     case USER_SIGNOUT_REQUEST: {
@@ -107,7 +107,7 @@ export default function(state = initialState, action) {
         signOut: {
           ...state.signOut,
           pending: true,
-        }
+        },
       };
     }
     case USER_SIGNOUT_SUCCESS: {
@@ -117,7 +117,7 @@ export default function(state = initialState, action) {
         signOut: {
           ...state.signOut,
           pending: false,
-        }
+        },
       };
     }
     case USER_UPDATE_EMAIL_REQUEST: {
@@ -126,7 +126,7 @@ export default function(state = initialState, action) {
         updating: {
           ...state.updating,
           pending: true,
-        }
+        },
       };
     }
     case USER_UPDATE_EMAIL_SUCCESS: {
@@ -134,11 +134,11 @@ export default function(state = initialState, action) {
 
       return {
         ...state,
-        user: user,
+        user,
         updating: {
           ...state.updating,
           pending: false,
-        }
+        },
       };
     }
     case USER_UPDATE_EMAIL_FAILURE: {
@@ -149,8 +149,8 @@ export default function(state = initialState, action) {
         updating: {
           ...state.updating,
           pending: false,
-          error: error,
-        }
+          error,
+        },
       };
     }
     default:

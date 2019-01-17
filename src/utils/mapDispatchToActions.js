@@ -1,10 +1,10 @@
-import { bindActionCreators } from "redux";
+import { bindActionCreators } from 'redux';
 
 export function mapDispatchToActions(actionCreators) {
   return (dispatch, getState) => {
     const mapDispatchToProps = { dispatch };
 
-    for (var k in actionCreators) {
+    for (const k in actionCreators) {
       mapDispatchToProps[k] = bindActionCreators(actionCreators[k], dispatch);
     }
 

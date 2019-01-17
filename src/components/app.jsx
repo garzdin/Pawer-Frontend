@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import withStyles from '@material-ui/core/styles/withStyles';
 
-import { Route, withRouter } from "react-router-dom";
+import { Route, withRouter } from 'react-router-dom';
 
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
 
 import ProtectedRoute from './protected-route';
 
@@ -42,44 +42,71 @@ const selectors = mapStateToProps({
   user: getUser,
 });
 
-class App extends React.Component {
-  render() {
-    const { classes } = this.props;
-    const { user } = this.props;
+const App = (props) => {
+  const { classes, user } = props;
 
-    return (
-      <React.Fragment>
-        <CssBaseline />
-        <AppBar user={user} />
-        <main className={classes.main}>
-          <React.Fragment>
-            <ProtectedRoute path="/" exact user={user} render={(props) => (
-              <Main {...props} user={user} />
-            )} />
-            <ProtectedRoute path="/account" exact user={user} render={(props) => (
-              <Account {...props} user={user}>
-                <Profile {...props} user={user} />
+  return (
+    <React.Fragment>
+      <CssBaseline />
+      <AppBar user={user} />
+      <main className={classes.main}>
+        <React.Fragment>
+          <ProtectedRoute
+            path="/"
+            exact
+            user={user}
+            render={routeProps => (
+              <Main {...routeProps} user={user} />
+            )}
+          />
+          <ProtectedRoute
+            path="/account"
+            exact
+            user={user}
+            render={routeProps => (
+              <Account {...routeProps} user={user}>
+                <Profile {...routeProps} user={user} />
               </Account>
-            )} />
-            <Route path="/signup/" render={(props) => (
-              <SignUp {...props} user={user} />
-            )} />
-            <Route path="/signin/" render={(props) => (
-              <SignIn {...props} user={user} />
-            )} />
-            <Route path="/signout/" render={(props) => (
-              <SignOut {...props} user={user} />
-            )} />
-          </React.Fragment>
-        </main>
-      </React.Fragment>
-    );
-  }
-}
+            )}
+          />
+          <Route
+            path="/signup/"
+            render={routeProps => (
+              <SignUp {...routeProps} user={user} />
+            )}
+          />
+          <Route
+            path="/signin/"
+            render={routeProps => (
+              <SignIn {...routeProps} user={user} />
+            )}
+          />
+          <Route
+            path="/signout/"
+            render={routeProps => (
+              <SignOut {...routeProps} user={user} />
+            )}
+          />
+        </React.Fragment>
+      </main>
+    </React.Fragment>
+  );
+};
 
 App.propTypes = {
-  classes: PropTypes.object.isRequired,
-  user: PropTypes.object,
+  classes: PropTypes.shape({
+    main: PropTypes.string,
+  }).isRequired,
+  user: PropTypes.shape({
+    className: PropTypes.string,
+    id: PropTypes.string,
+    _localId: PropTypes.string,
+    _objCount: PropTypes.number,
+  }),
+};
+
+App.defaultProps = {
+  user: {},
 };
 
 export default withRouter(connect(selectors)(withStyles(styles)(App)));

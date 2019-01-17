@@ -1,22 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
+
+import { connect } from 'react-redux';
+
+import { Redirect, withRouter } from 'react-router-dom';
+
+import withStyles from '@material-ui/core/styles/withStyles';
+
+import Paper from '@material-ui/core/Paper';
+
 import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-import withStyles from '@material-ui/core/styles/withStyles';
-
-import { Redirect, withRouter } from "react-router-dom";
-
-import { connect } from "react-redux";
+import Button from '@material-ui/core/Button';
 
 import { mapStateToProps } from '../utils';
 
 import { signIn } from '../services/parse';
+
 import { getUser, getSignInPending, getSignInError } from '../selectors';
 
 const styles = theme => ({
@@ -25,7 +26,7 @@ const styles = theme => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
+    padding: `${theme.spacing.unit}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
   },
   avatar: {
     margin: theme.spacing.unit,
@@ -33,7 +34,6 @@ const styles = theme => ({
   },
   form: {
     width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing.unit,
   },
   submit: {
     marginTop: theme.spacing.unit * 3,
@@ -56,13 +56,10 @@ class SignIn extends React.Component {
     };
 
     this.onChange = this.onChange.bind(this);
-    this.setRef = this.setRef.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+    this.setRef = this.setRef.bind(this);
   }
 
-  setRef(name, r) {
-    this[name] = r;
-  }
 
   onChange(name, e) {
     this.setState({ [name]: e.target.value });
@@ -79,34 +76,38 @@ class SignIn extends React.Component {
     }
   }
 
+  setRef(name, r) {
+    this[name] = r;
+  }
+
   render() {
-    const { classes, location, user, pending, error } = this.props;
+    const {
+      classes,
+      location,
+      user,
+      pending,
+      error,
+    } = this.props;
 
     return (
       user ? (
         <Redirect
           to={{
             pathname: '/',
-            state: { from: location }
+            state: { from: location },
           }}
         />
       ) : (
         <Paper className={classes.paper}>
-          <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign in
-          </Typography>
-          <p>{error.message}</p>
-          <form className={classes.form} onSubmit={(e) => e.preventDefault()}>
+          {error.message && <p>{error.message}</p>}
+          <form className={classes.form} onSubmit={e => e.preventDefault()}>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="email">Email Address</InputLabel>
-              <Input ref={(r) => this.setRef('email', r)} onChange={(e) => this.onChange('email', e)} id="email" name="email" autoComplete="email" autoFocus />
+              <Input ref={r => this.setRef('email', r)} onChange={e => this.onChange('email', e)} id="email" name="email" autoComplete="email" autoFocus />
             </FormControl>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="password">Password</InputLabel>
-              <Input ref={(r) => this.setRef('password', r)} onChange={(e) => this.onChange('password', e)} name="password" type="password" id="password" autoComplete="current-password" />
+              <Input ref={r => this.setRef('password', r)} onChange={e => this.onChange('password', e)} name="password" type="password" id="password" autoComplete="current-password" />
             </FormControl>
             <Button
               type="submit"
@@ -127,8 +128,37 @@ class SignIn extends React.Component {
 }
 
 SignIn.propTypes = {
-  classes: PropTypes.object.isRequired,
-  user: PropTypes.object,
+  classes: PropTypes.shape({
+    paper: PropTypes.string,
+    avatar: PropTypes.string,
+    form: PropTypes.string,
+    submit: PropTypes.string,
+  }).isRequired,
+  dispatch: PropTypes.func.isRequired,
+  location: PropTypes.shape({
+    key: PropTypes.string,
+    pathname: PropTypes.string,
+    search: PropTypes.string,
+    hash: PropTypes.string,
+    state: PropTypes.object,
+  }).isRequired,
+  pending: PropTypes.bool.isRequired,
+  user: PropTypes.shape({
+    className: PropTypes.string,
+    id: PropTypes.string,
+    _localId: PropTypes.string,
+    _objCount: PropTypes.number,
+  }),
+  error: PropTypes.shape({
+    message: PropTypes.string,
+    fileName: PropTypes.string,
+    lineNumber: PropTypes.string,
+  }),
+};
+
+SignIn.defaultProps = {
+  error: {},
+  user: {},
 };
 
 export default withRouter(connect(selectors)(withStyles(styles)(SignIn)));

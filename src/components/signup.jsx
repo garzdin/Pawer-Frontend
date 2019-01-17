@@ -18,9 +18,9 @@ import Button from '@material-ui/core/Button';
 
 import Typography from '@material-ui/core/Typography';
 
-import { Redirect, withRouter } from "react-router-dom";
+import { Redirect, withRouter } from 'react-router-dom';
 
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
 
 import { mapStateToProps } from '../utils';
 
@@ -69,26 +69,22 @@ class SignUp extends React.Component {
       activeStep: 0,
       email: '',
       password: '',
-      repeat_password: '',
-      first_name: '',
-      last_name: '',
+      repeatPassword: '',
+      firstName: '',
+      lastName: '',
       address: '',
       city: '',
-      postal_code: '',
+      postalCode: '',
       country: '',
     };
 
     this.onChange = this.onChange.bind(this);
-    this.setRef = this.setRef.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+    this.setRef = this.setRef.bind(this);
     this.handleNext = this.handleNext.bind(this);
     this.handleBack = this.handleBack.bind(this);
     this.getSteps = this.getSteps.bind(this);
     this.getStepContent = this.getStepContent.bind(this);
-  }
-
-  setRef(name, r) {
-    this[name] = r;
   }
 
   onChange(name, e) {
@@ -97,12 +93,104 @@ class SignUp extends React.Component {
 
   async onSubmit(e) {
     const { dispatch } = this.props;
-    const { email, password, repeat_password } = this.state;
+    const {
+      email,
+      password,
+      repeatPassword,
+      firstName,
+      lastName,
+      address,
+      city,
+      postalCode,
+      country,
+    } = this.state;
 
     e.preventDefault();
 
-    if (email && password === repeat_password) {
-      dispatch(signUp(email, password));
+    if (email && password === repeatPassword) {
+      dispatch(signUp(email, password, {
+        firstName, lastName, address, city, postalCode, country,
+      }));
+    }
+  }
+
+  getSteps() { // eslint-disable-line class-methods-use-this
+    return ['Account details', 'Personal details', 'Terms of service'];
+  }
+
+  setRef(name, r) {
+    this[name] = r;
+  }
+
+  getStepContent() {
+    const { classes } = this.props;
+    const { activeStep } = this.state;
+
+    switch (activeStep) {
+      case 0:
+        return (
+          <React.Fragment>
+            <FormControl margin="normal" required fullWidth>
+              <InputLabel htmlFor="email">Email Address</InputLabel>
+              <Input ref={r => this.setRef('email', r)} onChange={e => this.onChange('email', e)} id="email" name="email" autoComplete="email" autoFocus />
+            </FormControl>
+            <FormControl margin="normal" required fullWidth>
+              <InputLabel htmlFor="password">Password</InputLabel>
+              <Input ref={r => this.setRef('password', r)} onChange={e => this.onChange('password', e)} name="password" type="password" id="password" autoComplete="password" />
+            </FormControl>
+            <FormControl margin="normal" required fullWidth>
+              <InputLabel htmlFor="repeatPassword">Repeat Password</InputLabel>
+              <Input ref={r => this.setRef('repeatPassword', r)} onChange={e => this.onChange('repeatPassword', e)} name="repeatPassword" type="password" id="repeatPassword" autoComplete="repeatPassword" />
+            </FormControl>
+          </React.Fragment>
+        );
+      case 1:
+        return (
+          <React.Fragment>
+            <FormControl margin="normal" required fullWidth>
+              <InputLabel htmlFor="firstName">First Name</InputLabel>
+              <Input ref={r => this.setRef('firstName', r)} onChange={e => this.onChange('firstName', e)} id="firstName" name="firstName" autoComplete="firstName" />
+            </FormControl>
+            <FormControl margin="normal" required fullWidth>
+              <InputLabel htmlFor="lastName">Last Name</InputLabel>
+              <Input ref={r => this.setRef('lastName', r)} onChange={e => this.onChange('lastName', e)} name="lastName" id="lastName" autoComplete="lastName" />
+            </FormControl>
+            <FormControl margin="normal" required fullWidth>
+              <InputLabel htmlFor="address">Address</InputLabel>
+              <Input ref={r => this.setRef('address', r)} onChange={e => this.onChange('address', e)} name="address" id="address" autoComplete="address" />
+            </FormControl>
+            <FormControl margin="normal" required fullWidth>
+              <InputLabel htmlFor="city">City</InputLabel>
+              <Input ref={r => this.setRef('city', r)} onChange={e => this.onChange('city', e)} name="city" id="city" autoComplete="city" />
+            </FormControl>
+            <FormControl margin="normal" required fullWidth>
+              <InputLabel htmlFor="postalCode">Postal Code</InputLabel>
+              <Input ref={r => this.setRef('postalCode', r)} onChange={e => this.onChange('postalCode', e)} name="postalCode" id="postalCode" autoComplete="postalCode" />
+            </FormControl>
+            <FormControl margin="normal" required fullWidth>
+              <InputLabel htmlFor="country">Country</InputLabel>
+              <Input ref={r => this.setRef('country', r)} onChange={e => this.onChange('country', e)} name="country" id="country" autoComplete="country" />
+            </FormControl>
+          </React.Fragment>
+        );
+      case 2:
+        return (
+          /* eslint-disable max-len */
+          <React.Fragment>
+            <Typography className={classes.tos}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus fermentum varius quam, quis tempor urna. Phasellus tincidunt venenatis ipsum sodales tincidunt. Phasellus egestas lobortis dolor at vehicula. Sed in euismod nulla. Vestibulum semper fringilla mauris, in vehicula lacus euismod non. Fusce non tincidunt odio, nec blandit arcu. Sed vitae ante at velit eleifend imperdiet in at neque. In et auctor libero.</Typography>
+            <Typography className={classes.tos}>Cras tempor, risus non porttitor molestie, mauris neque iaculis lacus, sit amet consectetur sem quam nec lacus. Curabitur venenatis eget lectus vitae auctor. Interdum et malesuada fames ac ante ipsum primis in faucibus. Donec rhoncus ut arcu pellentesque iaculis. Maecenas a quam at massa pulvinar malesuada. Nullam auctor, libero ut semper tincidunt, arcu magna mollis leo, ut sagittis velit turpis id sem. Vivamus accumsan, nunc aliquam maximus tempor, dui massa accumsan orci, vitae</Typography>
+            <Typography className={classes.tos}>pellentesque tortor leo ut mi. Ut id augue neque. Fusce justo mauris, scelerisque vitae dui nec, malesuada auctor eros.</Typography>
+            <Typography className={classes.tos}>Quisque viverra, diam et cursus tincidunt, ante enim vestibulum lectus, a malesuada velit justo at nisi. Etiam luctus risus ac consectetur venenatis. Quisque at tellus nisi. Sed vel laoreet metus, id maximus nisl. Nulla et iaculis mi. Donec et viverra mi. Integer bibendum convallis egestas. Nullam non ex nisl. Ut dolor est, commodo a vehicula suscipit, feugiat id dolor. Nullam nisl arcu, eleifend et volutpat in, sagittis vitae est. Maecenas ut sapien ultrices, tincidunt erat</Typography>
+            {' '}
+            <Typography className={classes.tos}>et, hendrerit sem. Nulla hendrerit dignissim libero. Duis mollis ex a diam bibendum, non commodo diam auctor. Proin sit amet nibh pharetra quam condimentum faucibus at eu nibh.</Typography>
+            <Typography className={classes.tos}>Quisque ac dui et magna congue bibendum vitae ac libero. Cras scelerisque enim eu urna efficitur, sit amet faucibus tortor lobortis. In sagittis in massa et tincidunt. In ac ultricies neque, at eleifend massa. Phasellus lobortis mattis lorem. Suspendisse ex est, finibus id justo sed, consequat molestie sem. Pellentesque tempor lectus vel risus lacinia, eget accumsan elit faucibus. Nulla vel cursus elit, nec hendrerit urna. Fusce porttitor nisl a dapibus posuere. Nam risus justo,</Typography>
+            <Typography className={classes.tos}>pulvinar ut imperdiet nec, finibus vitae turpis.</Typography>
+            <Typography className={classes.tos}>Fusce turpis sem, pulvinar accumsan purus at, consequat placerat lorem. Vivamus tincidunt sodales arcu. Morbi ac nunc eu neque faucibus accumsan. Phasellus rutrum in neque in lobortis. Phasellus sed interdum leo, eu pulvinar leo. Sed pulvinar purus id tempus sodales. Donec non consequat mauris. Cras ut felis nec turpis pulvinar cursus ut vel lorem. Nam mollis magna eros, nec aliquet leo pharetra ut.</Typography>
+          </React.Fragment>
+          /* eslint-disable */
+        );
+      default:
+        return null;
     }
   }
 
@@ -118,80 +206,10 @@ class SignUp extends React.Component {
     this.setState({ activeStep: activeStep - 1 });
   }
 
-  getSteps() {
-    return ['Account details', 'Personal details', 'Terms of service'];
-  }
-
-  getStepContent() {
-    const { classes } = this.props;
-    const { activeStep } = this.state;
-
-    switch (activeStep) {
-      case 0:
-        return (
-          <React.Fragment>
-            <FormControl margin="normal" required fullWidth>
-              <InputLabel htmlFor="email">Email Address</InputLabel>
-              <Input ref={(r) => this.setRef('email', r)} onChange={(e) => this.onChange('email', e)} id="email" name="email" autoComplete="email" autoFocus />
-            </FormControl>
-            <FormControl margin="normal" required fullWidth>
-              <InputLabel htmlFor="password">Password</InputLabel>
-              <Input ref={(r) => this.setRef('password', r)} onChange={(e) => this.onChange('password', e)} name="password" type="password" id="password" autoComplete="password" />
-            </FormControl>
-            <FormControl margin="normal" required fullWidth>
-              <InputLabel htmlFor="repeat_password">Repeat Password</InputLabel>
-              <Input ref={(r) => this.setRef('repeat_password', r)} onChange={(e) => this.onChange('repeat_password', e)} name="repeat_password" type="password" id="repeat_password" autoComplete="repeat_password" />
-            </FormControl>
-          </React.Fragment>
-        );
-      case 1:
-        return (
-          <React.Fragment>
-            <FormControl margin="normal" required fullWidth>
-              <InputLabel htmlFor="first_name">First Name</InputLabel>
-              <Input ref={(r) => this.setRef('first_name', r)} onChange={(e) => this.onChange('first_name', e)} id="first_name" name="first_name" autoComplete="first_name" />
-            </FormControl>
-            <FormControl margin="normal" required fullWidth>
-              <InputLabel htmlFor="last_name">Last Name</InputLabel>
-              <Input ref={(r) => this.setRef('last_name', r)} onChange={(e) => this.onChange('last_name', e)} name="last_name" id="last_name" autoComplete="last_name" />
-            </FormControl>
-            <FormControl margin="normal" required fullWidth>
-              <InputLabel htmlFor="address">Address</InputLabel>
-              <Input ref={(r) => this.setRef('address', r)} onChange={(e) => this.onChange('address', e)} name="address" id="address" autoComplete="address" />
-            </FormControl>
-            <FormControl margin="normal" required fullWidth>
-              <InputLabel htmlFor="city">City</InputLabel>
-              <Input ref={(r) => this.setRef('city', r)} onChange={(e) => this.onChange('city', e)} name="city" id="city" autoComplete="city" />
-            </FormControl>
-            <FormControl margin="normal" required fullWidth>
-              <InputLabel htmlFor="postal_code">Postal Code</InputLabel>
-              <Input ref={(r) => this.setRef('postal_code', r)} onChange={(e) => this.onChange('postal_code', e)} name="postal_code" id="postal_code" autoComplete="postal_code" />
-            </FormControl>
-            <FormControl margin="normal" required fullWidth>
-              <InputLabel htmlFor="country">Country</InputLabel>
-              <Input ref={(r) => this.setRef('country', r)} onChange={(e) => this.onChange('country', e)} name="country" id="country" autoComplete="country" />
-            </FormControl>
-          </React.Fragment>
-        );
-      case 2:
-        return (
-          <React.Fragment>
-            <Typography className={classes.tos}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus fermentum varius quam, quis tempor urna. Phasellus tincidunt venenatis ipsum sodales tincidunt. Phasellus egestas lobortis dolor at vehicula. Sed in euismod nulla. Vestibulum semper fringilla mauris, in vehicula lacus euismod non. Fusce non tincidunt odio, nec blandit arcu. Sed vitae ante at velit eleifend imperdiet in at neque. In et auctor libero.</Typography>
-            <Typography className={classes.tos}>Cras tempor, risus non porttitor molestie, mauris neque iaculis lacus, sit amet consectetur sem quam nec lacus. Curabitur venenatis eget lectus vitae auctor. Interdum et malesuada fames ac ante ipsum primis in faucibus. Donec rhoncus ut arcu pellentesque iaculis. Maecenas a quam at massa pulvinar malesuada. Nullam auctor, libero ut semper tincidunt, arcu magna mollis leo, ut sagittis velit turpis id sem. Vivamus accumsan, nunc aliquam maximus tempor, dui massa accumsan orci, vitae</Typography>
-            <Typography className={classes.tos}>pellentesque tortor leo ut mi. Ut id augue neque. Fusce justo mauris, scelerisque vitae dui nec, malesuada auctor eros.</Typography>
-            <Typography className={classes.tos}>Quisque viverra, diam et cursus tincidunt, ante enim vestibulum lectus, a malesuada velit justo at nisi. Etiam luctus risus ac consectetur venenatis. Quisque at tellus nisi. Sed vel laoreet metus, id maximus nisl. Nulla et iaculis mi. Donec et viverra mi. Integer bibendum convallis egestas. Nullam non ex nisl. Ut dolor est, commodo a vehicula suscipit, feugiat id dolor. Nullam nisl arcu, eleifend et volutpat in, sagittis vitae est. Maecenas ut sapien ultrices, tincidunt erat</Typography> <Typography className={classes.tos}>et, hendrerit sem. Nulla hendrerit dignissim libero. Duis mollis ex a diam bibendum, non commodo diam auctor. Proin sit amet nibh pharetra quam condimentum faucibus at eu nibh.</Typography>
-            <Typography className={classes.tos}>Quisque ac dui et magna congue bibendum vitae ac libero. Cras scelerisque enim eu urna efficitur, sit amet faucibus tortor lobortis. In sagittis in massa et tincidunt. In ac ultricies neque, at eleifend massa. Phasellus lobortis mattis lorem. Suspendisse ex est, finibus id justo sed, consequat molestie sem. Pellentesque tempor lectus vel risus lacinia, eget accumsan elit faucibus. Nulla vel cursus elit, nec hendrerit urna. Fusce porttitor nisl a dapibus posuere. Nam risus justo,</Typography>
-            <Typography className={classes.tos}>pulvinar ut imperdiet nec, finibus vitae turpis.</Typography>
-            <Typography className={classes.tos}>Fusce turpis sem, pulvinar accumsan purus at, consequat placerat lorem. Vivamus tincidunt sodales arcu. Morbi ac nunc eu neque faucibus accumsan. Phasellus rutrum in neque in lobortis. Phasellus sed interdum leo, eu pulvinar leo. Sed pulvinar purus id tempus sodales. Donec non consequat mauris. Cras ut felis nec turpis pulvinar cursus ut vel lorem. Nam mollis magna eros, nec aliquet leo pharetra ut.</Typography>
-          </React.Fragment>
-        );
-      default:
-        return null;
-    }
-  }
-
   render() {
-    const { classes, location, user, pending, error } = this.props;
+    const {
+      classes, location, user, pending, error,
+    } = this.props;
     const { activeStep } = this.state;
     const steps = this.getSteps();
 
@@ -200,7 +218,7 @@ class SignUp extends React.Component {
         <Redirect
           to={{
             pathname: '/',
-            state: { from: location }
+            state: { from: location },
           }}
         />
       ) : (
@@ -208,21 +226,21 @@ class SignUp extends React.Component {
           <Grid container direction="column">
             <Grid item xs={12}>
               <Stepper activeStep={activeStep}>
-                {steps.map((label, index) => {
-                  return (
-                    <Step key={label}>
-                      <StepLabel>{label}</StepLabel>
-                    </Step>
-                  );
-                })}
+                {steps.map(label => (
+                  <Step key={label}>
+                    <StepLabel>{label}</StepLabel>
+                  </Step>
+                ))}
               </Stepper>
             </Grid>
-            <Grid container direction="column">
-              <Grid item xs={12}>
-                <p>{error.message}</p>
+            {error.message && (
+              <Grid container direction="column">
+                <Grid item xs={12}>
+                  <p>{error.message}</p>
+                </Grid>
               </Grid>
-            </Grid>
-            <form className={classes.form} onSubmit={(e) => e.preventDefault()}>
+            )}
+            <form className={classes.form} onSubmit={e => e.preventDefault()}>
               {this.getStepContent()}
               <Grid container direction="row">
                 <Grid item xs={6} className={classes.buttonContainer}>
@@ -257,8 +275,29 @@ class SignUp extends React.Component {
 }
 
 SignUp.propTypes = {
-  classes: PropTypes.object.isRequired,
+  dispatch: PropTypes.func.isRequired,
+  classes: PropTypes.shape({
+    paper: PropTypes.string,
+    form: PropTypes.string,
+    buttonContainer: PropTypes.string,
+    button: PropTypes.string,
+    instructions: PropTypes.string,
+    tos: PropTypes.string,
+  }).isRequired,
+  location: PropTypes.shape({
+    key: PropTypes.string,
+    pathname: PropTypes.string,
+    search: PropTypes.string,
+    hash: PropTypes.string,
+    state: PropTypes.object,
+  }).isRequired,
+  pending: PropTypes.bool.isRequired,
+  error: PropTypes.object.isRequired,
   user: PropTypes.object,
+};
+
+SignUp.defaultProps = {
+  user: {},
 };
 
 export default withRouter(connect(selectors)(withStyles(styles)(SignUp)));
