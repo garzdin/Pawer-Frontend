@@ -6,6 +6,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import withStyles from '@material-ui/core/styles/withStyles';
+import spacing from '@material-ui/core/styles/spacing';
 
 import Grid from '@material-ui/core/Grid';
 import Avatar from '@material-ui/core/Avatar';
@@ -15,7 +16,11 @@ import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import Typography from '@material-ui/core/Typography';
 
-import { updateEmail } from '../services/parse';
+import { mapStateToProps } from '../utils';
+
+import { updateEmail, updateFirstName, updateLastName } from '../services/parse';
+
+import { getUser, getUserUpdatePending } from '../selectors';
 
 const styles = theme => ({
   avatarContainer: {
@@ -37,14 +42,25 @@ const styles = theme => ({
   },
 });
 
+const selectors = mapStateToProps({
+  user: getUser,
+  updating: getUserUpdatePending,
+});
+
 class Profile extends React.Component {
   constructor(props) {
     super(props);
 
-    const email = props.user.getEmail();
+    const { user } = this.props;
+
+    const email = user.getEmail();
+    const firstName = user.get('firstName');
+    const lastName = user.get('lastName');
 
     this.state = {
       email,
+      firstName,
+      lastName,
     };
 
     this.onChange = this.onChange.bind(this);
@@ -58,14 +74,25 @@ class Profile extends React.Component {
 
   async onSubmit(e) {
     const { dispatch, user } = this.props;
-    const { email } = this.state;
+    const { email, firstName, lastName } = this.state;
 
     e.preventDefault();
 
     const oldEmail = user.getEmail();
+    const oldFirstName = user.get('firstName');
+    const oldLastName = user.get('lastName');
+
 
     if (email !== oldEmail) {
       dispatch(updateEmail(user, email));
+    }
+
+    if (oldFirstName !== firstName) {
+      dispatch(updateFirstName(user, firstName));
+    }
+
+    if (oldLastName !== lastName) {
+      dispatch(updateLastName(user, lastName));
     }
   }
 
@@ -74,10 +101,8 @@ class Profile extends React.Component {
   }
 
   render() {
-    const { classes, user } = this.props;
-    const { email } = this.state;
-
-    const username = user.getUsername();
+    const { classes, user, updating } = this.props;
+    const { email, firstName, lastName } = this.state;
 
     return (
       <Grid container className={classes.container}>
@@ -88,7 +113,7 @@ class Profile extends React.Component {
             </Grid>
             <Grid item zeroMinWidth>
               <Typography component="h3" variant="subtitle1" className={classes.name} noWrap>
-                {username}
+                {`${user.get('firstName')} ${user.get('lastName')}`}
               </Typography>
             </Grid>
           </Grid>
@@ -100,6 +125,20 @@ class Profile extends React.Component {
                 <InputLabel htmlFor="email">Email Address</InputLabel>
                 <Input ref={r => this.setRef('email', r)} onChange={e => this.onChange('email', e)} id="email" name="email" autoComplete="email" value={email} />
               </FormControl>
+              <Grid container spacing={spacing.unit}>
+                <Grid item md={6} xs={12}>
+                  <FormControl margin="dense" required fullWidth>
+                    <InputLabel htmlFor="firstName">First Name</InputLabel>
+                    <Input ref={r => this.setRef('firstName', r)} onChange={e => this.onChange('firstName', e)} id="firstName" name="firstName" autoComplete="firstName" value={firstName} />
+                  </FormControl>
+                </Grid>
+                <Grid item md={6} xs={12}>
+                  <FormControl margin="dense" required fullWidth>
+                    <InputLabel htmlFor="lastName">Last Name</InputLabel>
+                    <Input ref={r => this.setRef('lastName', r)} onChange={e => this.onChange('lastName', e)} id="lastName" name="lastName" autoComplete="lastName" value={lastName} />
+                  </FormControl>
+                </Grid>
+              </Grid>
               <Grid container className={classes.buttonContainer}>
                 <Grid item xs={6} />
                 <Grid item xs={6}>
@@ -110,6 +149,7 @@ class Profile extends React.Component {
                     color="primary"
                     className={classes.submit}
                     onClick={this.onSubmit}
+                    disabled={updating}
                   >
                     Save
                   </Button>
@@ -138,11 +178,13 @@ Profile.propTypes = {
     _localId: PropTypes.string,
     _objCount: PropTypes.number,
     getEmail: PropTypes.func,
+    get: PropTypes.func,
   }),
+  updating: PropTypes.bool.isRequired,
 };
 
 Profile.defaultProps = {
   user: {},
 };
 
-export default withRouter(connect()(withStyles(styles)(Profile)));
+export default withRouter(connect(selectors)(withStyles(styles)(Profile)));
