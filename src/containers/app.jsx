@@ -30,8 +30,33 @@ const styles = theme => ({
     display: 'block', // Fix IE 11 issue.
     marginLeft: theme.spacing.unit * 3,
     marginRight: theme.spacing.unit * 3,
-    [theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
+    [theme.breakpoints.down('xs')]: {
+      width: 200,
+      marginLeft: 'auto',
+      marginRight: 'auto',
+    },
+    [theme.breakpoints.up('xs')]: {
+      width: 250,
+      marginLeft: 'auto',
+      marginRight: 'auto',
+    },
+    [theme.breakpoints.up('sm')]: {
+      width: 400,
+      marginLeft: 'auto',
+      marginRight: 'auto',
+    },
+    [theme.breakpoints.up('md')]: {
+      width: 700,
+      marginLeft: 'auto',
+      marginRight: 'auto',
+    },
+    [theme.breakpoints.up('lg')]: {
       width: 900,
+      marginLeft: 'auto',
+      marginRight: 'auto',
+    },
+    [theme.breakpoints.up('xl')]: {
+      width: 1400,
       marginLeft: 'auto',
       marginRight: 'auto',
     },
