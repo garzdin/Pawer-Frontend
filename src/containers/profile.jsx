@@ -18,7 +18,7 @@ import Typography from '@material-ui/core/Typography';
 
 import { mapStateToProps } from '../utils';
 
-import { updateEmail, updateFirstName, updateLastName } from '../services/parse';
+import { update } from '../services/parse';
 
 import { getUser, getUserUpdatePending } from '../selectors';
 
@@ -56,11 +56,19 @@ class Profile extends React.Component {
     const email = user.getEmail();
     const firstName = user.get('firstName');
     const lastName = user.get('lastName');
+    const address = user.get('address');
+    const city = user.get('city');
+    const postalCode = user.get('postalCode');
+    const country = user.get('country');
 
     this.state = {
       email,
       firstName,
       lastName,
+      address,
+      city,
+      postalCode,
+      country,
     };
 
     this.onChange = this.onChange.bind(this);
@@ -74,25 +82,52 @@ class Profile extends React.Component {
 
   async onSubmit(e) {
     const { dispatch, user } = this.props;
-    const { email, firstName, lastName } = this.state;
+    const {
+      email, firstName, lastName, address, city, postalCode, country,
+    } = this.state;
 
     e.preventDefault();
 
     const oldEmail = user.getEmail();
     const oldFirstName = user.get('firstName');
     const oldLastName = user.get('lastName');
+    const oldAddress = user.get('address');
+    const oldCity = user.get('city');
+    const oldPostalCode = user.get('postalCode');
+    const oldCountry = user.get('country');
 
+    const changes = {};
 
     if (email !== oldEmail) {
-      dispatch(updateEmail(user, email));
+      changes.email = email;
     }
 
     if (oldFirstName !== firstName) {
-      dispatch(updateFirstName(user, firstName));
+      changes.firstName = firstName;
     }
 
     if (oldLastName !== lastName) {
-      dispatch(updateLastName(user, lastName));
+      changes.lastName = lastName;
+    }
+
+    if (oldAddress !== address) {
+      changes.address = address;
+    }
+
+    if (oldCity !== city) {
+      changes.city = city;
+    }
+
+    if (oldPostalCode !== postalCode) {
+      changes.postalCode = postalCode;
+    }
+
+    if (oldCountry !== country) {
+      changes.country = country;
+    }
+
+    if (changes) {
+      dispatch(update(user, changes));
     }
   }
 
@@ -102,7 +137,15 @@ class Profile extends React.Component {
 
   render() {
     const { classes, user, updating } = this.props;
-    const { email, firstName, lastName } = this.state;
+    const {
+      email,
+      firstName,
+      lastName,
+      address,
+      city,
+      postalCode,
+      country,
+    } = this.state;
 
     return (
       <Grid container className={classes.container}>
@@ -123,7 +166,7 @@ class Profile extends React.Component {
             <Grid container direction="column">
               <FormControl margin="dense" required fullWidth>
                 <InputLabel htmlFor="email">Email Address</InputLabel>
-                <Input ref={r => this.setRef('email', r)} onChange={e => this.onChange('email', e)} id="email" name="email" autoComplete="email" value={email} />
+                <Input ref={r => this.setRef('email', r)} onChange={e => this.onChange('email', e)} id="email" name="email" autoComplete="email" value={email} disabled />
               </FormControl>
               <Grid container spacing={spacing.unit}>
                 <Grid item md={6} xs={12}>
@@ -136,6 +179,34 @@ class Profile extends React.Component {
                   <FormControl margin="dense" required fullWidth>
                     <InputLabel htmlFor="lastName">Last Name</InputLabel>
                     <Input ref={r => this.setRef('lastName', r)} onChange={e => this.onChange('lastName', e)} id="lastName" name="lastName" autoComplete="lastName" value={lastName} />
+                  </FormControl>
+                </Grid>
+              </Grid>
+              <Grid container spacing={spacing.unit}>
+                <Grid item md={6} xs={12}>
+                  <FormControl margin="dense" required fullWidth>
+                    <InputLabel htmlFor="address">Address</InputLabel>
+                    <Input ref={r => this.setRef('address', r)} onChange={e => this.onChange('address', e)} id="address" name="address" autoComplete="address" value={address} />
+                  </FormControl>
+                </Grid>
+                <Grid item md={6} xs={12}>
+                  <FormControl margin="dense" required fullWidth>
+                    <InputLabel htmlFor="city">City</InputLabel>
+                    <Input ref={r => this.setRef('city', r)} onChange={e => this.onChange('city', e)} id="city" name="city" autoComplete="city" value={city} />
+                  </FormControl>
+                </Grid>
+              </Grid>
+              <Grid container spacing={spacing.unit}>
+                <Grid item md={6} xs={12}>
+                  <FormControl margin="dense" required fullWidth>
+                    <InputLabel htmlFor="postalCode">Postal Code</InputLabel>
+                    <Input ref={r => this.setRef('postalCode', r)} onChange={e => this.onChange('postalCode', e)} id="postalCode" name="postalCode" autoComplete="postalCode" value={postalCode} />
+                  </FormControl>
+                </Grid>
+                <Grid item md={6} xs={12}>
+                  <FormControl margin="dense" required fullWidth>
+                    <InputLabel htmlFor="country">Country</InputLabel>
+                    <Input ref={r => this.setRef('country', r)} onChange={e => this.onChange('country', e)} id="country" name="country" autoComplete="country" value={country} />
                   </FormControl>
                 </Grid>
               </Grid>
