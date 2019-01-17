@@ -43,6 +43,7 @@ const styles = theme => ({
   },
   container: {
     marginTop: theme.spacing.unit * 3,
+    marginBottom: theme.spacing.unit * 3,
   },
 });
 
