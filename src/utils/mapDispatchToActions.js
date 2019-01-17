@@ -1,14 +1,14 @@
 import { bindActionCreators } from 'redux';
 
 export function mapDispatchToActions(actionCreators) {
-  return (dispatch, getState) => {
-    const mapDispatchToProps = { dispatch };
+  return (dispatch) => {
+    const dispatchToProps = { dispatch };
 
-    for (const k in actionCreators) {
-      mapDispatchToProps[k] = bindActionCreators(actionCreators[k], dispatch);
-    }
+    Object.keys(actionCreators).forEach((k) => {
+      dispatchToProps[k] = bindActionCreators(actionCreators[k], dispatch);
+    });
 
-    return mapDispatchToProps;
+    return dispatchToProps;
   };
 }
 
