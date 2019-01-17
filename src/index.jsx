@@ -7,7 +7,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 
 import store from './store';
 
-import App from './components/app';
+import App from './containers/app';
 
 ReactDOM.render(
   <Provider store={store}>
@@ -15,5 +15,5 @@ ReactDOM.render(
       <App />
     </Router>
   </Provider>,
-  document.querySelector('#root'),
+  document.querySelector('#root'), // eslint-disable-line no-undef
 );
