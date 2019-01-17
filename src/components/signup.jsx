@@ -12,6 +12,9 @@ import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 
 import FormControl from '@material-ui/core/FormControl';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import Button from '@material-ui/core/Button';
@@ -76,9 +79,11 @@ class SignUp extends React.Component {
       city: '',
       postalCode: '',
       country: '',
+      tosAccepted: false,
     };
 
-    this.onChange = this.onChange.bind(this);
+    this.onFieldChange = this.onFieldChange.bind(this);
+    this.onCheckboxChange = this.onCheckboxChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.setRef = this.setRef.bind(this);
     this.handleNext = this.handleNext.bind(this);
@@ -87,8 +92,12 @@ class SignUp extends React.Component {
     this.getStepContent = this.getStepContent.bind(this);
   }
 
-  onChange(name, e) {
+  onFieldChange(name, e) {
     this.setState({ [name]: e.target.value });
+  }
+
+  onCheckboxChange(name, e) {
+    this.setState({ [name]: e.target.checked });
   }
 
   async onSubmit(e) {
@@ -103,11 +112,12 @@ class SignUp extends React.Component {
       city,
       postalCode,
       country,
+      tosAccepted,
     } = this.state;
 
     e.preventDefault();
 
-    if (email && password === repeatPassword) {
+    if (email && password === repeatPassword && tosAccepted) {
       dispatch(signUp(email, password, {
         firstName, lastName, address, city, postalCode, country,
       }));
@@ -124,7 +134,7 @@ class SignUp extends React.Component {
 
   getStepContent() {
     const { classes } = this.props;
-    const { activeStep } = this.state;
+    const { activeStep, tosAccepted } = this.state;
 
     switch (activeStep) {
       case 0:
@@ -132,15 +142,15 @@ class SignUp extends React.Component {
           <React.Fragment>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="email">Email Address</InputLabel>
-              <Input ref={r => this.setRef('email', r)} onChange={e => this.onChange('email', e)} id="email" name="email" autoComplete="email" autoFocus />
+              <Input ref={r => this.setRef('email', r)} onChange={e => this.onFieldChange('email', e)} id="email" name="email" autoComplete="email" autoFocus />
             </FormControl>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="password">Password</InputLabel>
-              <Input ref={r => this.setRef('password', r)} onChange={e => this.onChange('password', e)} name="password" type="password" id="password" autoComplete="password" />
+              <Input ref={r => this.setRef('password', r)} onChange={e => this.onFieldChange('password', e)} name="password" type="password" id="password" autoComplete="password" />
             </FormControl>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="repeatPassword">Repeat Password</InputLabel>
-              <Input ref={r => this.setRef('repeatPassword', r)} onChange={e => this.onChange('repeatPassword', e)} name="repeatPassword" type="password" id="repeatPassword" autoComplete="repeatPassword" />
+              <Input ref={r => this.setRef('repeatPassword', r)} onChange={e => this.onFieldChange('repeatPassword', e)} name="repeatPassword" type="password" id="repeatPassword" autoComplete="repeatPassword" />
             </FormControl>
           </React.Fragment>
         );
@@ -149,27 +159,27 @@ class SignUp extends React.Component {
           <React.Fragment>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="firstName">First Name</InputLabel>
-              <Input ref={r => this.setRef('firstName', r)} onChange={e => this.onChange('firstName', e)} id="firstName" name="firstName" autoComplete="firstName" />
+              <Input ref={r => this.setRef('firstName', r)} onChange={e => this.onFieldChange('firstName', e)} id="firstName" name="firstName" autoComplete="firstName" />
             </FormControl>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="lastName">Last Name</InputLabel>
-              <Input ref={r => this.setRef('lastName', r)} onChange={e => this.onChange('lastName', e)} name="lastName" id="lastName" autoComplete="lastName" />
+              <Input ref={r => this.setRef('lastName', r)} onChange={e => this.onFieldChange('lastName', e)} name="lastName" id="lastName" autoComplete="lastName" />
             </FormControl>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="address">Address</InputLabel>
-              <Input ref={r => this.setRef('address', r)} onChange={e => this.onChange('address', e)} name="address" id="address" autoComplete="address" />
+              <Input ref={r => this.setRef('address', r)} onChange={e => this.onFieldChange('address', e)} name="address" id="address" autoComplete="address" />
             </FormControl>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="city">City</InputLabel>
-              <Input ref={r => this.setRef('city', r)} onChange={e => this.onChange('city', e)} name="city" id="city" autoComplete="city" />
+              <Input ref={r => this.setRef('city', r)} onChange={e => this.onFieldChange('city', e)} name="city" id="city" autoComplete="city" />
             </FormControl>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="postalCode">Postal Code</InputLabel>
-              <Input ref={r => this.setRef('postalCode', r)} onChange={e => this.onChange('postalCode', e)} name="postalCode" id="postalCode" autoComplete="postalCode" />
+              <Input ref={r => this.setRef('postalCode', r)} onChange={e => this.onFieldChange('postalCode', e)} name="postalCode" id="postalCode" autoComplete="postalCode" />
             </FormControl>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="country">Country</InputLabel>
-              <Input ref={r => this.setRef('country', r)} onChange={e => this.onChange('country', e)} name="country" id="country" autoComplete="country" />
+              <Input ref={r => this.setRef('country', r)} onChange={e => this.onFieldChange('country', e)} name="country" id="country" autoComplete="country" />
             </FormControl>
           </React.Fragment>
         );
@@ -181,11 +191,22 @@ class SignUp extends React.Component {
             <Typography className={classes.tos}>Cras tempor, risus non porttitor molestie, mauris neque iaculis lacus, sit amet consectetur sem quam nec lacus. Curabitur venenatis eget lectus vitae auctor. Interdum et malesuada fames ac ante ipsum primis in faucibus. Donec rhoncus ut arcu pellentesque iaculis. Maecenas a quam at massa pulvinar malesuada. Nullam auctor, libero ut semper tincidunt, arcu magna mollis leo, ut sagittis velit turpis id sem. Vivamus accumsan, nunc aliquam maximus tempor, dui massa accumsan orci, vitae</Typography>
             <Typography className={classes.tos}>pellentesque tortor leo ut mi. Ut id augue neque. Fusce justo mauris, scelerisque vitae dui nec, malesuada auctor eros.</Typography>
             <Typography className={classes.tos}>Quisque viverra, diam et cursus tincidunt, ante enim vestibulum lectus, a malesuada velit justo at nisi. Etiam luctus risus ac consectetur venenatis. Quisque at tellus nisi. Sed vel laoreet metus, id maximus nisl. Nulla et iaculis mi. Donec et viverra mi. Integer bibendum convallis egestas. Nullam non ex nisl. Ut dolor est, commodo a vehicula suscipit, feugiat id dolor. Nullam nisl arcu, eleifend et volutpat in, sagittis vitae est. Maecenas ut sapien ultrices, tincidunt erat</Typography>
-            {' '}
             <Typography className={classes.tos}>et, hendrerit sem. Nulla hendrerit dignissim libero. Duis mollis ex a diam bibendum, non commodo diam auctor. Proin sit amet nibh pharetra quam condimentum faucibus at eu nibh.</Typography>
             <Typography className={classes.tos}>Quisque ac dui et magna congue bibendum vitae ac libero. Cras scelerisque enim eu urna efficitur, sit amet faucibus tortor lobortis. In sagittis in massa et tincidunt. In ac ultricies neque, at eleifend massa. Phasellus lobortis mattis lorem. Suspendisse ex est, finibus id justo sed, consequat molestie sem. Pellentesque tempor lectus vel risus lacinia, eget accumsan elit faucibus. Nulla vel cursus elit, nec hendrerit urna. Fusce porttitor nisl a dapibus posuere. Nam risus justo,</Typography>
             <Typography className={classes.tos}>pulvinar ut imperdiet nec, finibus vitae turpis.</Typography>
             <Typography className={classes.tos}>Fusce turpis sem, pulvinar accumsan purus at, consequat placerat lorem. Vivamus tincidunt sodales arcu. Morbi ac nunc eu neque faucibus accumsan. Phasellus rutrum in neque in lobortis. Phasellus sed interdum leo, eu pulvinar leo. Sed pulvinar purus id tempus sodales. Donec non consequat mauris. Cras ut felis nec turpis pulvinar cursus ut vel lorem. Nam mollis magna eros, nec aliquet leo pharetra ut.</Typography>
+            <FormGroup row>
+              <FormControlLabel
+                control={(
+                  <Checkbox
+                    checked={tosAccepted}
+                    onChange={e => this.onCheckboxChange('tosAccepted', e)}
+                    value="tosAccepted"
+                  />
+                )}
+                label="I have read and accept the terms of service"
+              />
+            </FormGroup>
           </React.Fragment>
           /* eslint-disable */
         );
