@@ -4,3 +4,5 @@ export const getSignUpError = store => store.auth.signUp.error;
 export const getSignInPending = store => store.auth.signIn.pending;
 export const getSignInError = store => store.auth.signIn.error;
 export const getSignOutPending = store => store.auth.signOut.pending;
+export const getUserUpdatePending = store => store.auth.updating.pending;
+export const getUserUpdateError = store => store.auth.updating.pending;
