@@ -7,13 +7,13 @@ import { Route, withRouter } from 'react-router-dom';
 
 import { connect } from 'react-redux';
 
-import ProtectedRoute from './protected-route';
+import ProtectedRoute from '../components/protected-route';
 
 import AppBar from './app-bar';
 
-import Main from './main';
+import Main from '../components/main';
 
-import Account from './account';
+import Account from '../components/account';
 import Profile from './profile';
 
 import SignUp from './signup';
