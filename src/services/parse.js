@@ -9,15 +9,9 @@ import {
   signInFailure,
   signOutRequest,
   signOutSuccess,
-  updateEmailRequest,
-  updateEmailSuccess,
-  updateEmailFailure,
-  updateFirstNameRequest,
-  updateFirstNameSuccess,
-  updateFirstNameFailure,
-  updateLastNameRequest,
-  updateLastNameSuccess,
-  updateLastNameFailure,
+  updateRequest,
+  updateSuccess,
+  updateFailure,
 } from '../actions';
 
 Parse.serverURL = 'http://localhost:1337/parse';
@@ -84,62 +78,18 @@ export function signOut() {
   };
 }
 
-export function updateEmail(user, email) {
+export function update(user, fields) {
   return async (dispatch) => {
-    dispatch(updateEmailRequest());
+    dispatch(updateRequest());
 
-    const result = user.setEmail(email);
+    Object.keys(fields).forEach(field => user.set(field, fields[field]));
 
-    if (result) {
-      try {
-        await user.save();
+    try {
+      await user.save();
 
-        dispatch(updateEmailSuccess(user));
-      } catch (error) {
-        dispatch(updateEmailFailure(error));
-      }
-    } else {
-      dispatch(updateEmailFailure({ message: 'Couldn\'t update email.' }));
-    }
-  };
-}
-
-export function updateFirstName(user, firstName) {
-  return async (dispatch) => {
-    dispatch(updateFirstNameRequest());
-
-    const result = user.set('firstName', firstName);
-
-    if (result) {
-      try {
-        await user.save();
-
-        dispatch(updateFirstNameSuccess(user));
-      } catch (error) {
-        dispatch(updateFirstNameFailure(error));
-      }
-    } else {
-      dispatch(updateFirstNameFailure({ message: 'Couldn\'t update first name.' }));
-    }
-  };
-}
-
-export function updateLastName(user, lastName) {
-  return async (dispatch) => {
-    dispatch(updateLastNameRequest());
-
-    const result = user.set('lastName', lastName);
-
-    if (result) {
-      try {
-        await user.save();
-
-        dispatch(updateLastNameSuccess(user));
-      } catch (error) {
-        dispatch(updateLastNameFailure(error));
-      }
-    } else {
-      dispatch(updateLastNameFailure({ message: 'Couldn\'t update last name.' }));
+      dispatch(updateSuccess(user));
+    } catch (error) {
+      dispatch(updateFailure(error));
     }
   };
 }
