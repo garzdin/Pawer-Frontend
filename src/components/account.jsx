@@ -42,7 +42,7 @@ const styles = theme => ({
     },
   },
   container: {
-    marginTop: '24px',
+    marginTop: theme.spacing.unit * 3,
   },
 });
 
