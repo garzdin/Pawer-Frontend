@@ -48,7 +48,7 @@ const App = (props) => {
   return (
     <React.Fragment>
       <CssBaseline />
-      <AppBar user={user} />
+      <AppBar />
       <main className={classes.main}>
         <React.Fragment>
           <ProtectedRoute
@@ -56,7 +56,7 @@ const App = (props) => {
             exact
             user={user}
             render={routeProps => (
-              <Main {...routeProps} user={user} />
+              <Main {...routeProps} />
             )}
           />
           <ProtectedRoute
@@ -64,27 +64,27 @@ const App = (props) => {
             exact
             user={user}
             render={routeProps => (
-              <Account {...routeProps} user={user}>
-                <Profile {...routeProps} user={user} />
+              <Account {...routeProps}>
+                <Profile {...routeProps} />
               </Account>
             )}
           />
           <Route
             path="/signup/"
             render={routeProps => (
-              <SignUp {...routeProps} user={user} />
+              <SignUp {...routeProps} />
             )}
           />
           <Route
             path="/signin/"
             render={routeProps => (
-              <SignIn {...routeProps} user={user} />
+              <SignIn {...routeProps} />
             )}
           />
           <Route
             path="/signout/"
             render={routeProps => (
-              <SignOut {...routeProps} user={user} />
+              <SignOut {...routeProps} />
             )}
           />
         </React.Fragment>
@@ -102,6 +102,7 @@ App.propTypes = {
     id: PropTypes.string,
     _localId: PropTypes.string,
     _objCount: PropTypes.number,
+    firstName: PropTypes.string,
   }),
 };
 
