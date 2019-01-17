@@ -10,6 +10,12 @@ import {
   USER_UPDATE_EMAIL_REQUEST,
   USER_UPDATE_EMAIL_SUCCESS,
   USER_UPDATE_EMAIL_FAILURE,
+  USER_UPDATE_FIRST_NAME_REQUEST,
+  USER_UPDATE_FIRST_NAME_SUCCESS,
+  USER_UPDATE_FIRST_NAME_FAILURE,
+  USER_UPDATE_LAST_NAME_REQUEST,
+  USER_UPDATE_LAST_NAME_SUCCESS,
+  USER_UPDATE_LAST_NAME_FAILURE,
 } from './types';
 
 export const signUpRequest = () => ({
@@ -69,6 +75,42 @@ export const updateEmailSuccess = user => ({
 
 export const updateEmailFailure = error => ({
   type: USER_UPDATE_EMAIL_FAILURE,
+  payload: {
+    error,
+  },
+});
+
+export const updateFirstNameRequest = () => ({
+  type: USER_UPDATE_FIRST_NAME_REQUEST,
+});
+
+export const updateFirstNameSuccess = user => ({
+  type: USER_UPDATE_FIRST_NAME_SUCCESS,
+  payload: {
+    user,
+  },
+});
+
+export const updateFirstNameFailure = error => ({
+  type: USER_UPDATE_FIRST_NAME_FAILURE,
+  payload: {
+    error,
+  },
+});
+
+export const updateLastNameRequest = () => ({
+  type: USER_UPDATE_LAST_NAME_REQUEST,
+});
+
+export const updateLastNameSuccess = user => ({
+  type: USER_UPDATE_LAST_NAME_SUCCESS,
+  payload: {
+    user,
+  },
+});
+
+export const updateLastNameFailure = error => ({
+  type: USER_UPDATE_LAST_NAME_FAILURE,
   payload: {
     error,
   },
