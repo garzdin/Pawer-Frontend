@@ -34,6 +34,9 @@ const styles = theme => ({
   fieldsContainer: {
     padding: theme.spacing.unit * 2,
   },
+  sectionHeader: {
+    marginTop: theme.spacing.unit * 2,
+  },
   buttonContainer: {
     marginTop: theme.spacing.unit * 2,
   },
@@ -66,6 +69,8 @@ class Profile extends React.Component {
       city,
       postalCode,
       country,
+      password: null,
+      repeatPassword: null,
     };
 
     this.onChange = this.onChange.bind(this);
@@ -80,7 +85,7 @@ class Profile extends React.Component {
   async onSubmit(e) {
     const { dispatch, user } = this.props;
     const {
-      email, firstName, lastName, address, city, postalCode, country,
+      email, firstName, lastName, address, city, postalCode, country, password, repeatPassword,
     } = this.state;
 
     e.preventDefault();
@@ -123,6 +128,10 @@ class Profile extends React.Component {
       changes.country = country;
     }
 
+    if (password === repeatPassword) {
+      changes.password = password;
+    }
+
     if (changes) {
       dispatch(update(user, changes));
     }
@@ -160,11 +169,13 @@ class Profile extends React.Component {
         </Grid>
         <Grid item xs={12} md={9} className={classes.fieldsContainer}>
           <form onSubmit={e => e.preventDefault()}>
+            <Typography>Account Information</Typography>
             <Grid container direction="column">
               <FormControl margin="dense" required fullWidth>
                 <InputLabel htmlFor="email">Email Address</InputLabel>
                 <Input ref={r => this.setRef('email', r)} onChange={e => this.onChange('email', e)} id="email" name="email" autoComplete="email" value={email} disabled />
               </FormControl>
+              <Typography className={classes.sectionHeader}>Personal Information</Typography>
               <Grid container spacing={spacing.unit}>
                 <Grid item md={6} xs={12}>
                   <FormControl margin="dense" required fullWidth>
@@ -204,6 +215,21 @@ class Profile extends React.Component {
                   <FormControl margin="dense" required fullWidth>
                     <InputLabel htmlFor="country">Country</InputLabel>
                     <Input ref={r => this.setRef('country', r)} onChange={e => this.onChange('country', e)} id="country" name="country" autoComplete="country" value={country} />
+                  </FormControl>
+                </Grid>
+              </Grid>
+              <Typography className={classes.sectionHeader}>Personal Information</Typography>
+              <Grid container spacing={spacing.unit}>
+                <Grid item md={6} xs={12}>
+                  <FormControl margin="dense" required fullWidth>
+                    <InputLabel htmlFor="password">Password</InputLabel>
+                    <Input ref={r => this.setRef('password', r)} onChange={e => this.onChange('password', e)} id="password" name="password" autoComplete="password" type="password" placeholder="•••••••••••••••••" />
+                  </FormControl>
+                </Grid>
+                <Grid item md={6} xs={12}>
+                  <FormControl margin="dense" required fullWidth>
+                    <InputLabel htmlFor="repeatPassword">Repeat Password</InputLabel>
+                    <Input ref={r => this.setRef('repeatPassword', r)} onChange={e => this.onChange('repeatPassword', e)} id="repeatPassword" name="repeatPassword" autoComplete="repeatPassword" type="password" placeholder="•••••••••••••••••" />
                   </FormControl>
                 </Grid>
               </Grid>
