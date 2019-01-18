@@ -18,7 +18,7 @@ import { mapStateToProps, mapDispatchToActions } from '../utils';
 
 import { getUser } from '../selectors';
 
-const styles = {
+const styles = theme => ({
   root: {
     flexGrow: 1,
   },
@@ -30,7 +30,11 @@ const styles = {
     color: 'inherit',
     cursor: 'auto',
   },
-};
+  name: {
+    paddingLeft: theme.spacing.unit,
+    fontWeight: 400,
+  },
+});
 
 const selectors = mapStateToProps({
   user: getUser,
@@ -64,6 +68,8 @@ class AppBarContainer extends React.Component {
 
     const open = Boolean(anchorEl);
 
+    const name = `${user.get('firstName')}`;
+
     return (
       <div className={classes.root}>
         <AppBar position="static">
@@ -80,6 +86,7 @@ class AppBarContainer extends React.Component {
                   color="inherit"
                 >
                   <AccountCircle />
+                  <Typography color="inherit" className={classes.name}>{name}</Typography>
                 </IconButton>
                 <Menu
                   id="menu-appbar"
