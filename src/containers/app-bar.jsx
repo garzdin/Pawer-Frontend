@@ -68,7 +68,7 @@ class AppBarContainer extends React.Component {
 
     const open = Boolean(anchorEl);
 
-    const name = `${user.get('firstName')}`;
+    const name = user && `${user.get('firstName')}`;
 
     return (
       <div className={classes.root}>
