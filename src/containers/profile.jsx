@@ -128,7 +128,7 @@ class Profile extends React.Component {
       changes.country = country;
     }
 
-    if (password === repeatPassword) {
+    if (password && password === repeatPassword) {
       changes.password = password;
     }
 
