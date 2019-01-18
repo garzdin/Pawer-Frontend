@@ -218,7 +218,7 @@ class Profile extends React.Component {
                   </FormControl>
                 </Grid>
               </Grid>
-              <Typography className={classes.sectionHeader}>Personal Information</Typography>
+              <Typography className={classes.sectionHeader}>Password Management</Typography>
               <Grid container spacing={spacing.unit}>
                 <Grid item md={6} xs={12}>
                   <FormControl margin="dense" required fullWidth>
