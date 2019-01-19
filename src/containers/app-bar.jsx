@@ -9,6 +9,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import Button from '@material-ui/core/Button';
+import Avatar from '@material-ui/core/Avatar';
 
 import { Link, withRouter } from 'react-router-dom';
 
@@ -33,6 +34,10 @@ const styles = theme => ({
   name: {
     paddingLeft: theme.spacing.unit,
     fontWeight: 400,
+  },
+  avatar: {
+    width: 20,
+    height: 20,
   },
 });
 
@@ -69,6 +74,8 @@ class AppBarContainer extends React.Component {
     const open = Boolean(anchorEl);
 
     const name = user && `${user.get('firstName')}`;
+    const avatar = user && user.get('avatar') && user.get('avatar').url();
+
 
     return (
       <div className={classes.root}>
@@ -85,7 +92,11 @@ class AppBarContainer extends React.Component {
                   onClick={this.handleMenu}
                   color="inherit"
                 >
-                  <AccountCircle />
+                  {avatar ? (
+                    <Avatar alt={name} src={avatar} className={classes.avatar} />
+                  ) : (
+                    <AccountCircle />
+                  )}
                   <Typography color="inherit" className={classes.name}>{name}</Typography>
                 </IconButton>
                 <Menu
