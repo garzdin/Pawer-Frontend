@@ -18,7 +18,7 @@ import Typography from '@material-ui/core/Typography';
 
 import { mapStateToProps } from '../utils';
 
-import { update } from '../services/parse';
+import { update, updateAvatar } from '../services/parse';
 
 import { getUser, getUserUpdatePending } from '../selectors';
 
@@ -27,9 +27,18 @@ const styles = theme => ({
     padding: theme.spacing.unit * 2,
     alignSelf: 'center',
   },
+  avatarUploadField: {
+    display: 'none',
+  },
   avatar: {
     width: theme.spacing.unit * 12,
     height: theme.spacing.unit * 12,
+    '&:hover': {
+      backgroundColor: 'black',
+    },
+    '&:hover img': {
+      opacity: 0.6,
+    },
   },
   fieldsContainer: {
     padding: theme.spacing.unit * 2,
@@ -60,6 +69,7 @@ class Profile extends React.Component {
     const city = user.get('city');
     const postalCode = user.get('postalCode');
     const country = user.get('country');
+    const avatar = user.get('avatar') && user.get('avatar').url();
 
     this.state = {
       email,
@@ -71,6 +81,8 @@ class Profile extends React.Component {
       country,
       password: null,
       repeatPassword: null,
+      avatar,
+      avatarPreview: null,
     };
 
     this.onChange = this.onChange.bind(this);
@@ -79,13 +91,28 @@ class Profile extends React.Component {
   }
 
   onChange(name, e) {
-    this.setState({ [name]: e.target.value });
+    const file = e.target.files && e.target.files.length > 0 && e.target.files[0];
+
+    if (file) {
+      this.setState({ avatarPreview: URL.createObjectURL(file), [name]: file });
+    } else {
+      this.setState({ [name]: e.target.value });
+    }
   }
 
   async onSubmit(e) {
     const { dispatch, user } = this.props;
     const {
-      email, firstName, lastName, address, city, postalCode, country, password, repeatPassword,
+      email,
+      firstName,
+      lastName,
+      address,
+      city,
+      postalCode,
+      country,
+      password,
+      repeatPassword,
+      avatar,
     } = this.state;
 
     e.preventDefault();
@@ -132,6 +159,10 @@ class Profile extends React.Component {
       changes.password = password;
     }
 
+    if (avatar) {
+      dispatch(updateAvatar(user, avatar));
+    }
+
     if (changes) {
       dispatch(update(user, changes));
     }
@@ -151,6 +182,8 @@ class Profile extends React.Component {
       city,
       postalCode,
       country,
+      avatar,
+      avatarPreview,
     } = this.state;
 
     return (
@@ -158,7 +191,10 @@ class Profile extends React.Component {
         <Grid item xs={12} md={3} className={classes.avatarContainer}>
           <Grid container direction="column" alignItems="center">
             <Grid item>
-              <Avatar alt="" src="" className={classes.avatar} />
+              <Input className={classes.avatarUploadField} ref={r => this.setRef('avatar', r)} onChange={e => this.onChange('avatar', e)} id="avatar" name="avatar" accept="image/*" type="file" />
+              <InputLabel htmlFor="avatar">
+                <Avatar alt={`${firstName} ${lastName}`} src={avatarPreview || avatar} className={classes.avatar} />
+              </InputLabel>
             </Grid>
             <Grid item zeroMinWidth>
               <Typography component="h3" variant="subtitle1" noWrap>
