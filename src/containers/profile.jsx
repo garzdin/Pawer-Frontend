@@ -15,6 +15,7 @@ import Button from '@material-ui/core/Button';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import Typography from '@material-ui/core/Typography';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import { mapStateToProps } from '../utils';
 
@@ -113,6 +114,7 @@ class Profile extends React.Component {
       password,
       repeatPassword,
       avatar,
+      avatarPreview,
     } = this.state;
 
     e.preventDefault();
@@ -159,7 +161,7 @@ class Profile extends React.Component {
       changes.password = password;
     }
 
-    if (avatar) {
+    if (avatarPreview) {
       dispatch(updateAvatar(user, avatar));
     }
 
@@ -193,7 +195,9 @@ class Profile extends React.Component {
             <Grid item>
               <Input className={classes.avatarUploadField} ref={r => this.setRef('avatar', r)} onChange={e => this.onChange('avatar', e)} id="avatar" name="avatar" accept="image/*" type="file" />
               <InputLabel htmlFor="avatar">
-                <Avatar alt={`${firstName} ${lastName}`} src={avatarPreview || avatar} className={classes.avatar} />
+                <Tooltip title="Change" aria-label="Change" placement="top">
+                  <Avatar alt={`${firstName} ${lastName}`} src={avatarPreview || avatar} className={classes.avatar} />
+                </Tooltip>
               </InputLabel>
             </Grid>
             <Grid item zeroMinWidth>
