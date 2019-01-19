@@ -94,4 +94,26 @@ export function update(user, fields) {
   };
 }
 
+export function updateAvatar(user, file) {
+  return async (dispatch) => {
+    dispatch(updateRequest());
+
+    const username = user.get('username');
+
+    const image = new Parse.File(username, file);
+
+    try {
+      image.save();
+
+      user.set('avatar', image);
+
+      user.save();
+
+      dispatch(updateSuccess(user));
+    } catch (error) {
+      dispatch(updateFailure(error));
+    }
+  };
+}
+
 export default Parse;
