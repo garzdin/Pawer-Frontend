@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { Link } from 'react-router-dom';
+
 import withStyles from '@material-ui/core/styles/withStyles';
 
 import Paper from '@material-ui/core/Paper';
@@ -45,6 +47,11 @@ const styles = theme => ({
     marginTop: theme.spacing.unit * 3,
     marginBottom: theme.spacing.unit * 3,
   },
+  link: {
+    textDecoration: 'inherit',
+    color: 'inherit',
+    cursor: 'auto',
+  },
 });
 
 class Account extends React.Component {
@@ -52,16 +59,18 @@ class Account extends React.Component {
     const { classes, location } = this.props;
 
     return config.map(({ text, path, icon }) => (
-      <MenuItem
-        key={path}
-        className={classes.menuItem}
-        selected={Boolean(location.pathname.match(path))}
-      >
-        <ListItemIcon className={classes.icon}>
-          {icon}
-        </ListItemIcon>
-        <ListItemText classes={{ primary: classes.primary }} inset primary={text} />
-      </MenuItem>
+      <Link key={path} to={path} className={classes.link}>
+        <MenuItem
+          key={path}
+          className={classes.menuItem}
+          selected={location.pathname === path}
+        >
+          <ListItemIcon className={classes.icon}>
+            {icon}
+          </ListItemIcon>
+          <ListItemText classes={{ primary: classes.primary }} inset primary={text} />
+        </MenuItem>
+      </Link>
     ));
   }
 
