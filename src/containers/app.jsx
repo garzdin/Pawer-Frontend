@@ -15,6 +15,7 @@ import Main from '../components/main';
 
 import Account from '../components/account';
 import Profile from './profile';
+import Pets from './pets';
 
 import SignUp from './signup';
 import SignIn from './signin';
@@ -85,12 +86,22 @@ const App = (props) => {
             )}
           />
           <ProtectedRoute
-            path="/account"
+            path="/account/"
             exact
             user={user}
             render={routeProps => (
               <Account {...routeProps}>
                 <Profile {...routeProps} />
+              </Account>
+            )}
+          />
+          <ProtectedRoute
+            path="/account/pets/"
+            exact
+            user={user}
+            render={routeProps => (
+              <Account {...routeProps}>
+                <Pets {...routeProps} />
               </Account>
             )}
           />
