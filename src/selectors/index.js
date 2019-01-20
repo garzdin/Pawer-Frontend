@@ -6,3 +6,6 @@ export const getSignInError = store => store.auth.signIn.error;
 export const getSignOutPending = store => store.auth.signOut.pending;
 export const getUserUpdatePending = store => store.auth.updating.pending;
 export const getUserUpdateError = store => store.auth.updating.pending;
+
+export const getPets = store => store.pets.pets;
+export const getPetsLoading = store => store.pets.loading;
