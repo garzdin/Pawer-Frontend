@@ -152,26 +152,27 @@ class NewPet extends React.Component {
         </Grid>
         <Grid item xs={12} md={9} className={classes.fieldsContainer}>
           <form onSubmit={e => e.preventDefault()}>
-            <Typography>Pet Information</Typography>
+            <Typography>Pet Profile</Typography>
             <Grid container direction="column">
-              <FormControl margin="dense" required fullWidth>
-                <InputLabel htmlFor="name">Name</InputLabel>
-                <Input ref={r => this.setRef('name', r)} onChange={e => this.onChange('name', e)} id="name" name="name" autoComplete="name" value={name} />
-              </FormControl>
               <Grid container spacing={spacing.unit}>
+                <Grid item md={6} xs={12}>
+                  <FormControl margin="dense" required fullWidth>
+                    <InputLabel htmlFor="name">Name</InputLabel>
+                    <Input ref={r => this.setRef('name', r)} onChange={e => this.onChange('name', e)} id="name" name="name" autoComplete="name" value={name} />
+                  </FormControl>
+                </Grid>
                 <Grid item md={6} xs={12}>
                   <FormControl margin="dense" required fullWidth>
                     <InputLabel htmlFor="breed">Breed</InputLabel>
                     <Input ref={r => this.setRef('breed', r)} onChange={e => this.onChange('breed', e)} id="breed" name="breed" autoComplete="breed" value={breed} />
                   </FormControl>
                 </Grid>
-                <Grid item md={6} xs={12}>
-                  <FormControl margin="dense" required fullWidth>
-                    <InputLabel htmlFor="info">Info</InputLabel>
-                    <Input ref={r => this.setRef('info', r)} onChange={e => this.onChange('info', e)} id="info" name="info" autoComplete="info" value={info} />
-                  </FormControl>
-                </Grid>
               </Grid>
+              <Typography className={classes.sectionHeader}>Pet Information</Typography>
+              <FormControl margin="dense" required fullWidth>
+                <InputLabel htmlFor="info">Info</InputLabel>
+                <Input ref={r => this.setRef('info', r)} onChange={e => this.onChange('info', e)} id="info" name="info" autoComplete="info" value={info} />
+              </FormControl>
               <Grid container className={classes.buttonContainer}>
                 <Grid item xs={6} />
                 <Grid item xs={6}>
