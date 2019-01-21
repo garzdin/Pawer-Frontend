@@ -160,9 +160,25 @@ export function createPet(fields) {
   return async (dispatch) => {
     dispatch(createPetRequest());
 
+    const { name } = fields;
+
     const pet = new Pet();
 
-    Object.keys(fields).forEach(field => pet.set(field, fields[field]));
+    Object.keys(fields).forEach((field) => {
+      if (field === 'avatar') {
+        const image = new Parse.File(name, fields[field]);
+
+        try {
+          image.save();
+
+          pet.set('avatar', image);
+        } catch (error) {
+          dispatch(createPetFailure(error));
+        }
+      } else {
+        pet.set(field, fields[field]);
+      }
+    });
 
     try {
       await pet.save();
