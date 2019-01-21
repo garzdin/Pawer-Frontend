@@ -16,6 +16,7 @@ import Main from '../components/main';
 import Account from '../components/account';
 import Profile from './profile';
 import Pets from './pets';
+import NewPet from './new-pet';
 
 import SignUp from './signup';
 import SignIn from './signin';
@@ -90,7 +91,7 @@ const App = (props) => {
             exact
             user={user}
             render={routeProps => (
-              <Account {...routeProps}>
+              <Account {...routeProps} activeMenuItem="profile">
                 <Profile {...routeProps} />
               </Account>
             )}
@@ -100,8 +101,18 @@ const App = (props) => {
             exact
             user={user}
             render={routeProps => (
-              <Account {...routeProps}>
+              <Account {...routeProps} activeMenuItem="pets">
                 <Pets {...routeProps} />
+              </Account>
+            )}
+          />
+          <ProtectedRoute
+            path="/account/pets/new/"
+            exact
+            user={user}
+            render={routeProps => (
+              <Account {...routeProps} activeMenuItem="pets">
+                <NewPet {...routeProps} />
               </Account>
             )}
           />

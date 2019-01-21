@@ -21,16 +21,19 @@ import SettingsIcon from '@material-ui/icons/Settings';
 
 const config = [
   {
+    key: 'profile',
     text: 'Profile',
     path: '/account',
     icon: <AccountCircleIcon />,
   },
   {
+    key: 'pets',
     text: 'Pets',
     path: '/account/pets',
     icon: <PetsIcon />,
   },
   {
+    key: 'settings',
     text: 'Settings',
     path: '/account/settings',
     icon: <SettingsIcon />,
@@ -56,14 +59,16 @@ const styles = theme => ({
 
 class Account extends React.Component {
   renderMenuItems() {
-    const { classes, location } = this.props;
+    const { classes, activeMenuItem } = this.props;
 
-    return config.map(({ text, path, icon }) => (
-      <Link key={path} to={path} className={classes.link}>
+    return config.map(({
+      key, text, path, icon,
+    }) => (
+      <Link key={key} to={path} className={classes.link}>
         <MenuItem
-          key={path}
+          key={key}
           className={classes.menuItem}
-          selected={location.pathname === path}
+          selected={key === activeMenuItem}
         >
           <ListItemIcon className={classes.icon}>
             {icon}
@@ -107,10 +112,12 @@ Account.propTypes = {
     menuItem: PropTypes.string,
     container: PropTypes.string,
   }).isRequired,
+  activeMenuItem: PropTypes.string,
 };
 
 Account.defaultProps = {
   children: null,
+  activeMenuItem: 'profile',
 };
 
 export default withStyles(styles)(Account);
