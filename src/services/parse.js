@@ -12,6 +12,20 @@ import {
   updateRequest,
   updateSuccess,
   updateFailure,
+
+  loadPetsRequest,
+  loadPetsSuccess,
+  loadPetsFailure,
+
+  createPetRequest,
+  createPetSuccess,
+  createPetFailure,
+  updatePetRequest,
+  updatePetSuccess,
+  updatePetFailure,
+  deletePetRequest,
+  deletePetSuccess,
+  deletePetFailure,
 } from '../actions';
 
 Parse.serverURL = 'http://localhost:1337/parse';
@@ -120,30 +134,49 @@ export function updateAvatar(user, file) {
   };
 }
 
-export function createPet(name, user, fields) {
+export function loadPets(user) {
   return async (dispatch) => {
-    dispatch(/* createPetRequest() */);
+    dispatch(loadPetsRequest());
+
+    const query = new Parse.Query(Pet);
+
+    query.equalTo('owner', user);
+
+    try {
+      const pets = await query.find();
+
+      if (pets) {
+        dispatch(loadPetsSuccess(pets));
+      } else {
+        dispatch(loadPetsFailure({ message: 'This user has no pets.' }));
+      }
+    } catch (error) {
+      dispatch(loadPetsFailure(error));
+    }
+  };
+}
+
+export function createPet(fields) {
+  return async (dispatch) => {
+    dispatch(createPetRequest());
 
     const pet = new Pet();
-
-    pet.set('name', name);
-    pet.set('user', user);
 
     Object.keys(fields).forEach(field => pet.set(field, fields[field]));
 
     try {
       await pet.save();
 
-      dispatch(/* createPetSuccess(pet) */);
+      dispatch(createPetSuccess(pet));
     } catch (error) {
-      dispatch(/* createPetFailure(error) */);
+      dispatch(createPetFailure(error));
     }
   };
 }
 
 export function updatePet(id, fields) {
   return async (dispatch) => {
-    dispatch(/*  updatePetRequest() */);
+    dispatch(updatePetRequest(id));
 
     const query = new Parse.Query(Pet);
 
@@ -157,19 +190,19 @@ export function updatePet(id, fields) {
 
         await pet.save();
 
-        dispatch(/* updatePetSuccess(pet) */);
+        dispatch(updatePetSuccess(pet));
       } else {
-        dispatch(/* updatePetFailure('No pet with that id was found.') */);
+        dispatch(updatePetFailure({ message: 'No pet with that id was found.' }));
       }
     } catch (error) {
-      dispatch(/* updatePetFailure(error) */);
+      dispatch(updatePetFailure(error));
     }
   };
 }
 
 export function deletePet(id) {
   return async (dispatch) => {
-    dispatch(/*  deletePetRequest() */);
+    dispatch(deletePetRequest(id));
 
     const query = new Parse.Query(Pet);
 
@@ -181,12 +214,12 @@ export function deletePet(id) {
       if (pet) {
         await pet.destroy();
 
-        dispatch(/* deletePetSuccess() */);
+        dispatch(deletePetSuccess(pet));
       } else {
-        dispatch(/* deletePetFailure('No pet with that id was found.') */);
+        dispatch(deletePetFailure({ message: 'No pet with that id was found.' }));
       }
     } catch (error) {
-      dispatch(/* deletePetFailure(error) */);
+      dispatch(deletePetFailure(error));
     }
   };
 }
