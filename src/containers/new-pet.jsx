@@ -54,7 +54,7 @@ const styles = theme => ({
 
 const selectors = mapStateToProps({
   user: getUser,
-  updating: getPetsLoading,
+  loading: getPetsLoading,
 });
 
 class NewPet extends React.Component {
