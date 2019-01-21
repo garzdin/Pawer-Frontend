@@ -14,6 +14,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
 
 import { loadPets } from '../services/parse';
 
@@ -30,6 +31,10 @@ const styles = theme => ({
   },
   listContainer: {
     marginBottom: theme.spacing.unit * 2,
+  },
+  infoLabel: {
+    textAlign: 'center',
+    marginBottom: theme.spacing.unit,
   },
 });
 
@@ -74,11 +79,23 @@ class Pets extends React.Component {
     const { classes, pets, loading } = this.props;
 
     return (
-      <Grid container className={classes.container}>
-        {pets && (
-          <List className={classes.listContainer}>
-            {this.renderPets()}
-          </List>
+      <Grid container direction="column" className={classes.container}>
+        {pets.length === 0 && loading && (
+          <Grid item className={classes.infoLabel}>
+            <Typography>Loading...</Typography>
+          </Grid>
+        )}
+        {pets.length === 0 && !loading && (
+          <Grid item className={classes.infoLabel}>
+            <Typography>No pets</Typography>
+          </Grid>
+        )}
+        {pets.length > 0 && (
+          <Grid item>
+            <List className={classes.listContainer}>
+              {this.renderPets()}
+            </List>
+          </Grid>
         )}
         <Grid container className={classes.buttonContainer}>
           <Grid item xs={6} />
