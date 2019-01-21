@@ -19,9 +19,9 @@ import Tooltip from '@material-ui/core/Tooltip';
 
 import { mapStateToProps } from '../utils';
 
-import { update, updateAvatar } from '../services/parse';
+import { createPet } from '../services/parse';
 
-import { getUser, getUserUpdatePending } from '../selectors';
+import { getUser, getPetsLoading } from '../selectors';
 
 const styles = theme => ({
   avatarContainer: {
@@ -54,35 +54,18 @@ const styles = theme => ({
 
 const selectors = mapStateToProps({
   user: getUser,
-  updating: getUserUpdatePending,
+  updating: getPetsLoading,
 });
 
 class NewPet extends React.Component {
   constructor(props) {
     super(props);
 
-    const { user } = this.props;
-
-    const email = user.getEmail();
-    const firstName = user.get('firstName');
-    const lastName = user.get('lastName');
-    const address = user.get('address');
-    const city = user.get('city');
-    const postalCode = user.get('postalCode');
-    const country = user.get('country');
-    const avatar = user.get('avatar') && user.get('avatar').url();
-
     this.state = {
-      email,
-      firstName,
-      lastName,
-      address,
-      city,
-      postalCode,
-      country,
-      password: null,
-      repeatPassword: null,
-      avatar,
+      name: '',
+      breed: '',
+      info: '',
+      avatar: null,
       avatarPreview: null,
     };
 
@@ -104,69 +87,38 @@ class NewPet extends React.Component {
   async onSubmit(e) {
     const { dispatch, user } = this.props;
     const {
-      email,
-      firstName,
-      lastName,
-      address,
-      city,
-      postalCode,
-      country,
-      password,
-      repeatPassword,
+      name,
+      breed,
+      info,
       avatar,
-      avatarPreview,
     } = this.state;
 
     e.preventDefault();
 
-    const oldEmail = user.getEmail();
-    const oldFirstName = user.get('firstName');
-    const oldLastName = user.get('lastName');
-    const oldAddress = user.get('address');
-    const oldCity = user.get('city');
-    const oldPostalCode = user.get('postalCode');
-    const oldCountry = user.get('country');
-
     const changes = {};
 
-    if (email !== oldEmail) {
-      changes.email = email;
+    if (name) {
+      changes.name = name;
     }
 
-    if (oldFirstName !== firstName) {
-      changes.firstName = firstName;
+    if (breed) {
+      changes.breed = breed;
     }
 
-    if (oldLastName !== lastName) {
-      changes.lastName = lastName;
+    if (info) {
+      changes.info = info;
     }
 
-    if (oldAddress !== address) {
-      changes.address = address;
+    if (avatar) {
+      changes.avatar = avatar;
     }
 
-    if (oldCity !== city) {
-      changes.city = city;
-    }
-
-    if (oldPostalCode !== postalCode) {
-      changes.postalCode = postalCode;
-    }
-
-    if (oldCountry !== country) {
-      changes.country = country;
-    }
-
-    if (password && password === repeatPassword) {
-      changes.password = password;
-    }
-
-    if (avatarPreview) {
-      dispatch(updateAvatar(user, avatar));
+    if (user) {
+      changes.owner = user;
     }
 
     if (changes) {
-      dispatch(update(user, changes));
+      dispatch(createPet(changes));
     }
   }
 
@@ -175,15 +127,11 @@ class NewPet extends React.Component {
   }
 
   render() {
-    const { classes, user, updating } = this.props;
+    const { classes, loading } = this.props;
     const {
-      email,
-      firstName,
-      lastName,
-      address,
-      city,
-      postalCode,
-      country,
+      name,
+      breed,
+      info,
       avatar,
       avatarPreview,
     } = this.state;
@@ -195,81 +143,32 @@ class NewPet extends React.Component {
             <Grid item>
               <Input className={classes.avatarUploadField} ref={r => this.setRef('avatar', r)} onChange={e => this.onChange('avatar', e)} id="avatar" name="avatar" accept="image/*" type="file" />
               <InputLabel htmlFor="avatar">
-                <Tooltip title="Change" aria-label="Change" placement="top">
-                  <Avatar alt={`${firstName} ${lastName}`} src={avatarPreview || avatar} className={classes.avatar} />
+                <Tooltip title={avatar ? 'Change' : 'Add'} aria-label={avatar ? 'Change' : 'Add'} placement="top">
+                  <Avatar alt={`${name}`} src={avatarPreview || avatar} className={classes.avatar} />
                 </Tooltip>
               </InputLabel>
-            </Grid>
-            <Grid item zeroMinWidth>
-              <Typography component="h3" variant="subtitle1" noWrap>
-                {`${user.get('firstName')} ${user.get('lastName')}`}
-              </Typography>
             </Grid>
           </Grid>
         </Grid>
         <Grid item xs={12} md={9} className={classes.fieldsContainer}>
           <form onSubmit={e => e.preventDefault()}>
-            <Typography>Account Information</Typography>
+            <Typography>Pet Information</Typography>
             <Grid container direction="column">
               <FormControl margin="dense" required fullWidth>
-                <InputLabel htmlFor="email">Email Address</InputLabel>
-                <Input ref={r => this.setRef('email', r)} onChange={e => this.onChange('email', e)} id="email" name="email" autoComplete="email" value={email} disabled />
+                <InputLabel htmlFor="name">Name</InputLabel>
+                <Input ref={r => this.setRef('name', r)} onChange={e => this.onChange('name', e)} id="name" name="name" autoComplete="name" value={name} />
               </FormControl>
-              <Typography className={classes.sectionHeader}>Personal Information</Typography>
               <Grid container spacing={spacing.unit}>
                 <Grid item md={6} xs={12}>
                   <FormControl margin="dense" required fullWidth>
-                    <InputLabel htmlFor="firstName">First Name</InputLabel>
-                    <Input ref={r => this.setRef('firstName', r)} onChange={e => this.onChange('firstName', e)} id="firstName" name="firstName" autoComplete="firstName" value={firstName} />
+                    <InputLabel htmlFor="breed">Breed</InputLabel>
+                    <Input ref={r => this.setRef('breed', r)} onChange={e => this.onChange('breed', e)} id="breed" name="breed" autoComplete="breed" value={breed} />
                   </FormControl>
                 </Grid>
                 <Grid item md={6} xs={12}>
                   <FormControl margin="dense" required fullWidth>
-                    <InputLabel htmlFor="lastName">Last Name</InputLabel>
-                    <Input ref={r => this.setRef('lastName', r)} onChange={e => this.onChange('lastName', e)} id="lastName" name="lastName" autoComplete="lastName" value={lastName} />
-                  </FormControl>
-                </Grid>
-              </Grid>
-              <Grid container spacing={spacing.unit}>
-                <Grid item md={6} xs={12}>
-                  <FormControl margin="dense" required fullWidth>
-                    <InputLabel htmlFor="address">Address</InputLabel>
-                    <Input ref={r => this.setRef('address', r)} onChange={e => this.onChange('address', e)} id="address" name="address" autoComplete="address" value={address} />
-                  </FormControl>
-                </Grid>
-                <Grid item md={6} xs={12}>
-                  <FormControl margin="dense" required fullWidth>
-                    <InputLabel htmlFor="city">City</InputLabel>
-                    <Input ref={r => this.setRef('city', r)} onChange={e => this.onChange('city', e)} id="city" name="city" autoComplete="city" value={city} />
-                  </FormControl>
-                </Grid>
-              </Grid>
-              <Grid container spacing={spacing.unit}>
-                <Grid item md={6} xs={12}>
-                  <FormControl margin="dense" required fullWidth>
-                    <InputLabel htmlFor="postalCode">Postal Code</InputLabel>
-                    <Input ref={r => this.setRef('postalCode', r)} onChange={e => this.onChange('postalCode', e)} id="postalCode" name="postalCode" autoComplete="postalCode" value={postalCode} />
-                  </FormControl>
-                </Grid>
-                <Grid item md={6} xs={12}>
-                  <FormControl margin="dense" required fullWidth>
-                    <InputLabel htmlFor="country">Country</InputLabel>
-                    <Input ref={r => this.setRef('country', r)} onChange={e => this.onChange('country', e)} id="country" name="country" autoComplete="country" value={country} />
-                  </FormControl>
-                </Grid>
-              </Grid>
-              <Typography className={classes.sectionHeader}>Password Management</Typography>
-              <Grid container spacing={spacing.unit}>
-                <Grid item md={6} xs={12}>
-                  <FormControl margin="dense" required fullWidth>
-                    <InputLabel htmlFor="password">Password</InputLabel>
-                    <Input ref={r => this.setRef('password', r)} onChange={e => this.onChange('password', e)} id="password" name="password" autoComplete="password" type="password" placeholder="•••••••••••••••••" />
-                  </FormControl>
-                </Grid>
-                <Grid item md={6} xs={12}>
-                  <FormControl margin="dense" required fullWidth>
-                    <InputLabel htmlFor="repeatPassword">Repeat Password</InputLabel>
-                    <Input ref={r => this.setRef('repeatPassword', r)} onChange={e => this.onChange('repeatPassword', e)} id="repeatPassword" name="repeatPassword" autoComplete="repeatPassword" type="password" placeholder="•••••••••••••••••" />
+                    <InputLabel htmlFor="info">Info</InputLabel>
+                    <Input ref={r => this.setRef('info', r)} onChange={e => this.onChange('info', e)} id="info" name="info" autoComplete="info" value={info} />
                   </FormControl>
                 </Grid>
               </Grid>
@@ -283,7 +182,7 @@ class NewPet extends React.Component {
                     color="primary"
                     className={classes.submit}
                     onClick={this.onSubmit}
-                    disabled={updating}
+                    disabled={loading}
                   >
                     Save
                   </Button>
@@ -313,7 +212,7 @@ NewPet.propTypes = {
     getEmail: PropTypes.func,
     get: PropTypes.func,
   }),
-  updating: PropTypes.bool.isRequired,
+  loading: PropTypes.bool.isRequired,
 };
 
 NewPet.defaultProps = {
