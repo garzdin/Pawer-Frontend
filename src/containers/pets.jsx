@@ -15,6 +15,8 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 
+import { loadPets } from '../services/parse';
+
 import { mapStateToProps } from '../utils';
 
 import { getUser, getPets, getPetsLoading } from '../selectors';
@@ -37,18 +39,29 @@ const selectors = mapStateToProps({
   loading: getPetsLoading,
 });
 
-class Profile extends React.Component {
+class Pets extends React.Component {
+  componentWillMount() {
+    const {
+      dispatch, user, pets, loading,
+    } = this.props;
+
+    if (pets.length === 0 && !loading) {
+      dispatch(loadPets(user));
+    }
+  }
+
   renderPets() {
     const { pets, loading } = this.props;
 
     if (!loading) {
       return pets.map(pet => (
-        <ListItem alignItems="flex-start">
+        <ListItem key={() => pet.get('id')}>
           <ListItemAvatar>
             <Avatar alt={pet.get('name')} src={pet.get('avatar')} />
           </ListItemAvatar>
           <ListItemText
             primary={pet.get('name')}
+            secondary={pet.get('breed')}
           />
         </ListItem>
       ));
@@ -89,7 +102,7 @@ class Profile extends React.Component {
   }
 }
 
-Profile.propTypes = {
+Pets.propTypes = {
   classes: PropTypes.shape({
     avatarContainer: PropTypes.string,
     avatar: PropTypes.string,
@@ -115,9 +128,9 @@ Profile.propTypes = {
   loading: PropTypes.bool.isRequired,
 };
 
-Profile.defaultProps = {
+Pets.defaultProps = {
   user: {},
   pets: [],
 };
 
-export default withRouter(connect(selectors)(withStyles(styles)(Profile)));
+export default withRouter(connect(selectors)(withStyles(styles)(Pets)));
