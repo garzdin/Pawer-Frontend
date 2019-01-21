@@ -57,7 +57,7 @@ class Pets extends React.Component {
       return pets.map(pet => (
         <ListItem key={() => pet.get('id')}>
           <ListItemAvatar>
-            <Avatar alt={pet.get('name')} src={pet.get('avatar')} />
+            <Avatar alt={pet.get('name')} src={pet.get('avatar') && pet.get('avatar').url()} />
           </ListItemAvatar>
           <ListItemText
             primary={pet.get('name')}
