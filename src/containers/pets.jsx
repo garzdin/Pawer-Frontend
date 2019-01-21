@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 
 import { connect } from 'react-redux';
 
@@ -70,17 +70,18 @@ class Profile extends React.Component {
         <Grid container className={classes.buttonContainer}>
           <Grid item xs={6} />
           <Grid item xs={6}>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              className={classes.submit}
-              onClick={this.onSubmit}
-              disabled={loading}
-            >
-              Add
-            </Button>
+            <Link to="/account/pets/new/">
+              <Button
+                fullWidth
+                variant="contained"
+                color="primary"
+                className={classes.submit}
+                onClick={this.onSubmit}
+                disabled={loading}
+              >
+                Add
+              </Button>
+            </Link>
           </Grid>
         </Grid>
       </Grid>
