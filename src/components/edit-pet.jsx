@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { Redirect } from 'react-router-dom';
+
 import withStyles from '@material-ui/core/styles/withStyles';
 import spacing from '@material-ui/core/styles/spacing';
 
@@ -46,22 +48,12 @@ class EditPet extends React.Component {
   constructor(props) {
     super(props);
 
-    const { pet } = props;
-
-    const name = pet.get && pet.get('name');
-    const breed = pet.get && pet.get('breed');
-    const info = pet.get && pet.get('info');
-    const avatar = pet.get && pet.get('avatar') && pet.get('avatar').url();
-
     this.state = {
-      name,
-      breed,
-      info,
-      avatar,
       avatarPreview: null,
     };
 
     this.onChange = this.onChange.bind(this);
+    this.onDelete = this.onDelete.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.setRef = this.setRef.bind(this);
   }
@@ -71,26 +63,23 @@ class EditPet extends React.Component {
 
     if (file) {
       this.setState({ avatarPreview: URL.createObjectURL(file), [name]: file });
-    } else {
-      this.setState({ [name]: e.target.value });
     }
   }
 
-  async onSubmit(e) {
+  onSubmit(e) {
     const { updatePet, user, pet } = this.props;
-    const {
-      name,
-      breed,
-      info,
-      avatar,
-      avatarPreview,
-    } = this.state;
+    const { avatarPreview } = this.state;
 
     e.preventDefault();
 
     const changes = {};
 
     const { id } = pet;
+
+    const name = this.name.value;
+    const breed = this.breed.value;
+    const info = this.info.value;
+    const avatar = this.avatar.files.length > 0 ? this.avatar.files[0] : null;
 
     if (name) {
       changes.name = name;
@@ -117,82 +106,126 @@ class EditPet extends React.Component {
     }
   }
 
+  onDelete(e) {
+    const { pet, deletePet } = this.props;
+
+    const { id } = pet;
+
+    e.preventDefault();
+
+    if (id) {
+      deletePet(id);
+    }
+  }
+
   setRef(name, r) {
     this[name] = r;
   }
 
   render() {
-    const { classes, petsLoading } = this.props;
     const {
-      name,
-      breed,
-      info,
-      avatar,
-      avatarPreview,
-    } = this.state;
+      classes, petsStatus, location, pet,
+    } = this.props;
+    const { avatarPreview } = this.state;
+
+    const name = pet.get && pet.get('name');
+    const breed = pet.get && pet.get('breed');
+    const info = pet.get && pet.get('info');
+    const avatar = pet.get && pet.get('avatar') && pet.get('avatar').url && pet.get('avatar').url();
 
     return (
-      <Grid container className={classes.container}>
-        <Grid item xs={12} md={3} className={classes.avatarContainer}>
-          <Grid container direction="column" alignItems="center">
-            <Grid item>
-              <Input className={classes.avatarUploadField} ref={r => this.setRef('avatar', r)} onChange={e => this.onChange('avatar', e)} id="avatar" name="avatar" accept="image/*" type="file" />
-              <InputLabel htmlFor="avatar">
-                <Tooltip title={avatar ? 'Change' : 'Add'} aria-label={avatar ? 'Change' : 'Add'} placement="top">
-                  <Avatar alt={`${name}`} src={avatarPreview || avatar} className={classes.avatar} />
-                </Tooltip>
-              </InputLabel>
-            </Grid>
-          </Grid>
-        </Grid>
-        <Grid item xs={12} md={9} className={classes.fieldsContainer}>
-          <form onSubmit={e => e.preventDefault()}>
-            <Typography>Pet Profile</Typography>
-            <Grid container direction="column">
-              <Grid container spacing={spacing.unit}>
-                <Grid item md={6} xs={12}>
-                  <FormControl margin="dense" required fullWidth>
-                    <InputLabel htmlFor="name">Name</InputLabel>
-                    <Input ref={r => this.setRef('name', r)} onChange={e => this.onChange('name', e)} id="name" name="name" autoComplete="name" value={name} />
-                  </FormControl>
-                </Grid>
-                <Grid item md={6} xs={12}>
-                  <FormControl margin="dense" required fullWidth>
-                    <InputLabel htmlFor="breed">Breed</InputLabel>
-                    <Input ref={r => this.setRef('breed', r)} onChange={e => this.onChange('breed', e)} id="breed" name="breed" autoComplete="breed" value={breed} />
-                  </FormControl>
+      <React.Fragment>
+        {
+          (!name && petsStatus === 'load_success') || petsStatus === 'delete_success' || petsStatus === 'update_success' ? (
+            <Redirect
+              to={{
+                pathname: '/account/pets/',
+                state: { from: location },
+              }}
+            />
+          ) : (
+            <Grid container className={classes.container}>
+              <Grid item xs={12} md={3} className={classes.avatarContainer}>
+                <Grid container direction="column" alignItems="center">
+                  <Grid item>
+                    <Input className={classes.avatarUploadField} inputRef={r => this.setRef('avatar', r)} onChange={e => this.onChange('avatar', e)} id="avatar" name="avatar" accept="image/*" type="file" />
+                    <InputLabel htmlFor="avatar">
+                      <Tooltip title={avatar ? 'Change' : 'Add'} aria-label={avatar ? 'Change' : 'Add'} placement="top">
+                        <Avatar alt={`${name}`} src={avatarPreview || avatar} className={classes.avatar} />
+                      </Tooltip>
+                    </InputLabel>
+                  </Grid>
                 </Grid>
               </Grid>
-              <Typography className={classes.sectionHeader}>Pet Information</Typography>
-              <FormControl margin="dense" required fullWidth>
-                <InputLabel htmlFor="info">Info</InputLabel>
-                <Input ref={r => this.setRef('info', r)} onChange={e => this.onChange('info', e)} id="info" name="info" autoComplete="info" value={info} />
-              </FormControl>
-              <Grid container className={classes.buttonContainer}>
-                <Grid item xs={6} />
-                <Grid item xs={6}>
-                  <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    color="primary"
-                    className={classes.submit}
-                    onClick={this.onSubmit}
-                    disabled={petsLoading}
-                  >
-                    Save
-                  </Button>
-                </Grid>
+              <Grid item xs={12} md={9} className={classes.fieldsContainer}>
+                <form onSubmit={e => e.preventDefault()}>
+                  <Typography>Pet Profile</Typography>
+                  <Grid container direction="column">
+                    <Grid container spacing={spacing.unit}>
+                      <Grid item md={6} xs={12}>
+                        <FormControl margin="dense" required fullWidth>
+                          <InputLabel htmlFor="name">Name</InputLabel>
+                          <Input key={name} inputRef={r => this.setRef('name', r)} id="name" name="name" autoComplete="name" defaultValue={name || ''} />
+                        </FormControl>
+                      </Grid>
+                      <Grid item md={6} xs={12}>
+                        <FormControl margin="dense" required fullWidth>
+                          <InputLabel htmlFor="breed">Breed</InputLabel>
+                          <Input key={breed} inputRef={r => this.setRef('breed', r)} id="breed" name="breed" autoComplete="breed" defaultValue={breed || ''} />
+                        </FormControl>
+                      </Grid>
+                    </Grid>
+                    <Typography className={classes.sectionHeader}>Pet Information</Typography>
+                    <FormControl margin="dense" required fullWidth>
+                      <InputLabel htmlFor="info">Info</InputLabel>
+                      <Input key={info} inputRef={r => this.setRef('info', r)} id="info" name="info" autoComplete="info" defaultValue={info || ''} />
+                    </FormControl>
+                    <Grid container spacing={spacing.unit} className={classes.buttonContainer}>
+                      <Grid item xs={6}>
+                        <Button
+                          fullWidth
+                          variant="contained"
+                          color="secondary"
+                          className={classes.submit}
+                          onClick={this.onDelete}
+                          disabled={petsStatus === 'delete_request'}
+                        >
+                            Delete
+                        </Button>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <Button
+                          type="submit"
+                          fullWidth
+                          variant="contained"
+                          color="primary"
+                          className={classes.submit}
+                          onClick={this.onSubmit}
+                          disabled={petsStatus === 'update_request'}
+                        >
+                          Save
+                        </Button>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                </form>
               </Grid>
             </Grid>
-          </form>
-        </Grid>
-      </Grid>
+          )
+        }
+      </React.Fragment>
     );
   }
 }
 
 EditPet.propTypes = {
+  location: PropTypes.shape({
+    key: PropTypes.string,
+    pathname: PropTypes.string,
+    search: PropTypes.string,
+    hash: PropTypes.string,
+    state: PropTypes.object,
+  }).isRequired,
   classes: PropTypes.shape({
     avatarContainer: PropTypes.string,
     avatar: PropTypes.string,
@@ -215,7 +248,8 @@ EditPet.propTypes = {
     get: PropTypes.func,
   }),
   updatePet: PropTypes.func.isRequired,
-  petsLoading: PropTypes.bool.isRequired,
+  deletePet: PropTypes.func.isRequired,
+  petsStatus: PropTypes.string.isRequired,
   match: PropTypes.shape({
     params: PropTypes.shape({
       id: PropTypes.string,
