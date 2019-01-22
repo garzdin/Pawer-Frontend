@@ -25,7 +25,6 @@ import SignOut from './signout';
 
 import {
   update as updateMethod,
-  updateAvatar as updateAvatarMethod,
   loadPets as loadPetsMethod,
   createPet as createPetMethod,
   updatePet as updatePetMethod,
@@ -87,7 +86,6 @@ const selectors = mapStateToProps({
 
 const actions = mapDispatchToActions({
   updateUser: updateMethod,
-  updateUserAvatar: updateAvatarMethod,
   loadPets: loadPetsMethod,
   createPet: createPetMethod,
   updatePet: updatePetMethod,
@@ -117,7 +115,7 @@ class App extends React.Component {
 
   render() {
     const {
-      classes, user, pets, petsStatus, pet, loadPets, updateUser, updateUserAvatar, userUpdating,
+      classes, user, pets, petsStatus, pet, loadPets, updateUser, userUpdating,
       createPet, updatePet, deletePet,
     } = this.props;
 
@@ -151,7 +149,6 @@ class App extends React.Component {
                     {...routeProps}
                     user={user}
                     updateUser={updateUser}
-                    updateUserAvatar={updateUserAvatar}
                     updatingUser={userUpdating}
                   />
                 </Account>
@@ -269,7 +266,6 @@ App.propTypes = {
   pet: PropTypes.func.isRequired,
   petsStatus: PropTypes.string.isRequired,
   updateUser: PropTypes.func.isRequired,
-  updateUserAvatar: PropTypes.func.isRequired,
   loadPets: PropTypes.func.isRequired,
   createPet: PropTypes.func.isRequired,
   updatePet: PropTypes.func.isRequired,

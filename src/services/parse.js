@@ -100,32 +100,26 @@ export function update(user, fields) {
   return async (dispatch) => {
     dispatch(updateRequest());
 
-    Object.keys(fields).forEach(field => user.set(field, fields[field]));
+    const username = user.get('username');
+
+    Object.keys(fields).forEach((field) => {
+      if (field === 'avatar') {
+        const image = new Parse.File(username, fields[field]);
+
+        try {
+          image.save();
+
+          user.set('avatar', image);
+        } catch (error) {
+          dispatch(updateFailure(error));
+        }
+      } else {
+        user.set(field, fields[field]);
+      }
+    });
 
     try {
       await user.save();
-
-      dispatch(updateSuccess(user));
-    } catch (error) {
-      dispatch(updateFailure(error));
-    }
-  };
-}
-
-export function updateAvatar(user, file) {
-  return async (dispatch) => {
-    dispatch(updateRequest());
-
-    const username = user.get('username');
-
-    const image = new Parse.File(username, file);
-
-    try {
-      image.save();
-
-      user.set('avatar', image);
-
-      user.save();
 
       dispatch(updateSuccess(user));
     } catch (error) {
