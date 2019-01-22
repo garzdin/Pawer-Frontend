@@ -41,7 +41,7 @@ class Pets extends React.Component {
     if (petsStatus === 'load_success') {
       return pets.map(pet => (
         <Link key={() => pet.get('id')} to={`/account/pets/edit/${pet.id}/`} className={classes.link}>
-          <ListItem>
+          <ListItem button>
             <ListItemAvatar>
               <Avatar alt={pet.get('name')} src={pet.get('avatar') && pet.get('avatar').url()} />
             </ListItemAvatar>
