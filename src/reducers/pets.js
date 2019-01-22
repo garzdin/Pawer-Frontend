@@ -15,7 +15,7 @@ import {
 
 const initialState = {
   pets: [],
-  loading: false,
+  status: 'idle',
   error: {},
 };
 
@@ -24,7 +24,7 @@ export default function (state = initialState, action) {
     case PETS_LOAD_REQUEST: {
       return {
         ...state,
-        loading: true,
+        status: 'load_request',
       };
     }
     case PETS_LOAD_SUCCESS: {
@@ -32,7 +32,7 @@ export default function (state = initialState, action) {
 
       return {
         ...state,
-        loading: false,
+        status: 'load_success',
         pets,
       };
     }
@@ -41,13 +41,14 @@ export default function (state = initialState, action) {
 
       return {
         ...state,
+        status: 'load_failure',
         error,
       };
     }
     case PET_CREATE_REQUEST: {
       return {
         ...state,
-        loading: true,
+        status: 'create_request',
       };
     }
     case PET_CREATE_SUCCESS: {
@@ -55,7 +56,7 @@ export default function (state = initialState, action) {
 
       return {
         ...state,
-        loading: false,
+        status: 'create_success',
         pets: [
           ...state.pets,
           pet,
@@ -67,14 +68,14 @@ export default function (state = initialState, action) {
 
       return {
         ...state,
-        loading: false,
+        status: 'create_failure',
         error,
       };
     }
     case PET_UPDATE_REQUEST: {
       return {
         ...state,
-        loading: true,
+        status: 'update_request',
       };
     }
     case PET_UPDATE_SUCCESS: {
@@ -88,7 +89,7 @@ export default function (state = initialState, action) {
 
       return {
         ...state,
-        loading: false,
+        status: 'update_success',
         pets: newPets,
       };
     }
@@ -97,14 +98,14 @@ export default function (state = initialState, action) {
 
       return {
         ...state,
-        loading: false,
+        status: 'update_failure',
         error,
       };
     }
     case PET_DELETE_REQUEST: {
       return {
         ...state,
-        loading: true,
+        status: 'delete_request',
       };
     }
     case PET_DELETE_SUCCESS: {
@@ -113,7 +114,7 @@ export default function (state = initialState, action) {
 
       return {
         ...state,
-        loading: false,
+        status: 'delete_success',
         pets: pets.filter(pet => pet !== petToDelete),
       };
     }
@@ -122,7 +123,7 @@ export default function (state = initialState, action) {
 
       return {
         ...state,
-        loading: false,
+        status: 'delete_failure',
         error,
       };
     }
