@@ -8,7 +8,7 @@ export const getUserUpdatePending = store => store.auth.updating.pending;
 export const getUserUpdateError = store => store.auth.updating.pending;
 
 export const getPets = store => store.pets.pets;
-export const getPetsLoading = store => store.pets.loading;
+export const getPetsStatus = store => store.pets.status;
 
 export const getPetById = store => id => store.pets.pets
   .reduce((acc, v) => (v.id === id ? v : acc), {});
