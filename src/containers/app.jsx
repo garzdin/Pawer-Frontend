@@ -14,17 +14,29 @@ import AppBar from './app-bar';
 import Main from '../components/main';
 
 import Account from '../components/account';
-import Profile from './profile';
-import Pets from './pets';
-import NewPet from './new-pet';
+import Profile from '../components/profile';
+import Pets from '../components/pets';
+import NewPet from '../components/new-pet';
+import EditPet from '../components/edit-pet';
 
 import SignUp from './signup';
 import SignIn from './signin';
 import SignOut from './signout';
 
-import { mapStateToProps } from '../utils';
+import {
+  update as updateMethod,
+  updateAvatar as updateAvatarMethod,
+  loadPets as loadPetsMethod,
+  createPet as createPetMethod,
+  updatePet as updatePetMethod,
+  deletePet as deletePetMethod,
+} from '../services/parse';
 
-import { getUser } from '../selectors';
+import { mapStateToProps, mapDispatchToActions } from '../utils';
+
+import {
+  getUser, getUserUpdatePending, getPets, getPetsLoading, getPetById,
+} from '../selectors';
 
 const styles = theme => ({
   main: {
@@ -67,78 +79,164 @@ const styles = theme => ({
 
 const selectors = mapStateToProps({
   user: getUser,
+  userUpdating: getUserUpdatePending,
+  pets: getPets,
+  petsLoading: getPetsLoading,
+  pet: getPetById,
 });
 
-const App = (props) => {
-  const { classes, user } = props;
+const actions = mapDispatchToActions({
+  updateUser: updateMethod,
+  updateUserAvatar: updateAvatarMethod,
+  loadPets: loadPetsMethod,
+  createPet: createPetMethod,
+  updatePet: updatePetMethod,
+  deletePet: deletePetMethod,
+});
 
-  return (
-    <React.Fragment>
-      <CssBaseline />
-      <AppBar />
-      <main className={classes.main}>
-        <React.Fragment>
-          <ProtectedRoute
-            path="/"
-            exact
-            user={user}
-            render={routeProps => (
-              <Main {...routeProps} />
-            )}
-          />
-          <ProtectedRoute
-            path="/account/"
-            exact
-            user={user}
-            render={routeProps => (
-              <Account {...routeProps} activeMenuItem="profile">
-                <Profile {...routeProps} />
-              </Account>
-            )}
-          />
-          <ProtectedRoute
-            path="/account/pets/"
-            exact
-            user={user}
-            render={routeProps => (
-              <Account {...routeProps} activeMenuItem="pets">
-                <Pets {...routeProps} />
-              </Account>
-            )}
-          />
-          <ProtectedRoute
-            path="/account/pets/new/"
-            exact
-            user={user}
-            render={routeProps => (
-              <Account {...routeProps} activeMenuItem="pets">
-                <NewPet {...routeProps} />
-              </Account>
-            )}
-          />
-          <Route
-            path="/signup/"
-            render={routeProps => (
-              <SignUp {...routeProps} />
-            )}
-          />
-          <Route
-            path="/signin/"
-            render={routeProps => (
-              <SignIn {...routeProps} />
-            )}
-          />
-          <Route
-            path="/signout/"
-            render={routeProps => (
-              <SignOut {...routeProps} />
-            )}
-          />
-        </React.Fragment>
-      </main>
-    </React.Fragment>
-  );
-};
+class App extends React.Component {
+  componentWillMount() {
+    const { user, loadPets } = this.props;
+
+    if (user) {
+      loadPets(user);
+    }
+  }
+
+  render() {
+    const {
+      classes, user, pets, petsLoading, loadPets, updateUser, updateUserAvatar, userUpdating,
+      createPet, updatePet, pet,
+    } = this.props;
+
+    return (
+      <React.Fragment>
+        <CssBaseline />
+        <AppBar />
+        <main className={classes.main}>
+          <React.Fragment>
+            <ProtectedRoute
+              path="/"
+              exact
+              user={user}
+              render={routeProps => (
+                <Main {...routeProps} />
+              )}
+            />
+            <ProtectedRoute
+              path="/account/"
+              exact
+              user={user}
+              render={routeProps => (
+                <Account
+                  {...routeProps}
+                  pets={pets}
+                  petsLoading={petsLoading}
+                  loadPets={loadPets}
+                  activeMenuItem="profile"
+                >
+                  <Profile
+                    {...routeProps}
+                    user={user}
+                    updateUser={updateUser}
+                    updateUserAvatar={updateUserAvatar}
+                    updatingUser={userUpdating}
+                  />
+                </Account>
+              )}
+            />
+            <ProtectedRoute
+              path="/account/pets/"
+              exact
+              user={user}
+              render={routeProps => (
+                <Account
+                  {...routeProps}
+                  pets={pets}
+                  petsLoading={petsLoading}
+                  loadPets={loadPets}
+                  activeMenuItem="pets"
+                >
+                  <Pets
+                    {...routeProps}
+                    user={user}
+                    pets={pets}
+                    petsLoading={petsLoading}
+                  />
+                </Account>
+              )}
+            />
+            <ProtectedRoute
+              path="/account/pets/new/"
+              exact
+              user={user}
+              render={routeProps => (
+                <Account
+                  {...routeProps}
+                  pets={pets}
+                  petsLoading={petsLoading}
+                  loadPets={loadPets}
+                  activeMenuItem="pets"
+                >
+                  <NewPet
+                    {...routeProps}
+                    user={user}
+                    pets={pets}
+                    petsLoading={petsLoading}
+                    createPet={createPet}
+                  />
+                </Account>
+              )}
+            />
+            <ProtectedRoute
+              path="/account/pets/edit/:id/"
+              exact
+              user={user}
+              render={routeProps => (
+                <Account
+                  {...routeProps}
+                  pets={pets}
+                  petsLoading={petsLoading}
+                  loadPets={loadPets}
+                  activeMenuItem="pets"
+                >
+                  {!petsLoading && (
+                    <EditPet
+                      {...routeProps}
+                      user={user}
+                      pet={pet(routeProps.match.params.id)}
+                      petsLoading={petsLoading}
+                      updatePet={updatePet}
+                    />
+                  )}
+                </Account>
+              )
+              }
+            />
+            <Route
+              path="/signup/"
+              render={routeProps => (
+                <SignUp {...routeProps} />
+              )}
+            />
+            <Route
+              path="/signin/"
+              render={routeProps => (
+                <SignIn {...routeProps} />
+              )}
+            />
+            <Route
+              path="/signout/"
+              render={routeProps => (
+                <SignOut {...routeProps} />
+              )}
+            />
+          </React.Fragment>
+        </main>
+      </React.Fragment>
+    );
+  }
+}
 
 App.propTypes = {
   classes: PropTypes.shape({
@@ -149,12 +247,26 @@ App.propTypes = {
     id: PropTypes.string,
     _localId: PropTypes.string,
     _objCount: PropTypes.number,
-    firstName: PropTypes.string,
   }),
+  userUpdating: PropTypes.bool.isRequired,
+  pets: PropTypes.arrayOf(PropTypes.shape({
+    className: PropTypes.string,
+    id: PropTypes.string,
+    _localId: PropTypes.string,
+    _objCount: PropTypes.number,
+  })).isRequired,
+  pet: PropTypes.func.isRequired,
+  petsLoading: PropTypes.bool.isRequired,
+  updateUser: PropTypes.func.isRequired,
+  updateUserAvatar: PropTypes.func.isRequired,
+  loadPets: PropTypes.func.isRequired,
+  createPet: PropTypes.func.isRequired,
+  updatePet: PropTypes.func.isRequired,
+  deletePet: PropTypes.func.isRequired,
 };
 
 App.defaultProps = {
   user: {},
 };
 
-export default withRouter(connect(selectors)(withStyles(styles)(App)));
+export default withRouter(connect(selectors, actions)(withStyles(styles)(App)));
