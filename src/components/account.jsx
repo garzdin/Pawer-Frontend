@@ -113,11 +113,18 @@ Account.propTypes = {
     container: PropTypes.string,
   }).isRequired,
   activeMenuItem: PropTypes.string,
+  user: PropTypes.shape({
+    className: PropTypes.string,
+    id: PropTypes.string,
+    _localId: PropTypes.string,
+    _objCount: PropTypes.number,
+  }),
 };
 
 Account.defaultProps = {
   children: null,
   activeMenuItem: 'profile',
+  user: {},
 };
 
 export default withStyles(styles)(Account);
