@@ -1,9 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { withRouter, Link } from 'react-router-dom';
-
-import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 import withStyles from '@material-ui/core/styles/withStyles';
 
@@ -16,18 +14,16 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
-import { loadPets } from '../services/parse';
-
-import { mapStateToProps } from '../utils';
-
-import { getUser, getPets, getPetsLoading } from '../selectors';
-
 const styles = theme => ({
   container: {
     padding: theme.spacing.unit * 2,
   },
   inline: {
     display: 'inline',
+  },
+  link: {
+    textDecoration: 'inherit',
+    color: 'inherit',
   },
   listContainer: {
     marginBottom: theme.spacing.unit * 2,
@@ -38,37 +34,23 @@ const styles = theme => ({
   },
 });
 
-const selectors = mapStateToProps({
-  user: getUser,
-  pets: getPets,
-  loading: getPetsLoading,
-});
-
 class Pets extends React.Component {
-  componentWillMount() {
-    const {
-      dispatch, user, pets, loading,
-    } = this.props;
-
-    if (pets.length === 0 && !loading) {
-      dispatch(loadPets(user));
-    }
-  }
-
   renderPets() {
-    const { pets, loading } = this.props;
+    const { classes, pets, petsLoading } = this.props;
 
-    if (!loading) {
+    if (!petsLoading) {
       return pets.map(pet => (
-        <ListItem key={() => pet.get('id')}>
-          <ListItemAvatar>
-            <Avatar alt={pet.get('name')} src={pet.get('avatar') && pet.get('avatar').url()} />
-          </ListItemAvatar>
-          <ListItemText
-            primary={pet.get('name')}
-            secondary={pet.get('breed')}
-          />
-        </ListItem>
+        <Link key={() => pet.get('id')} to={`/account/pets/edit/${pet.id}/`} className={classes.link}>
+          <ListItem>
+            <ListItemAvatar>
+              <Avatar alt={pet.get('name')} src={pet.get('avatar') && pet.get('avatar').url()} />
+            </ListItemAvatar>
+            <ListItemText
+              primary={pet.get('name')}
+              secondary={pet.get('breed')}
+            />
+          </ListItem>
+        </Link>
       ));
     }
 
@@ -76,16 +58,16 @@ class Pets extends React.Component {
   }
 
   render() {
-    const { classes, pets, loading } = this.props;
+    const { classes, pets, petsLoading } = this.props;
 
     return (
       <Grid container direction="column" className={classes.container}>
-        {pets.length === 0 && loading && (
+        {pets.length === 0 && petsLoading && (
           <Grid item className={classes.infoLabel}>
             <Typography>Loading...</Typography>
           </Grid>
         )}
-        {pets.length === 0 && !loading && (
+        {pets.length === 0 && !petsLoading && (
           <Grid item className={classes.infoLabel}>
             <Typography>No pets</Typography>
           </Grid>
@@ -107,7 +89,7 @@ class Pets extends React.Component {
                 color="primary"
                 className={classes.submit}
                 onClick={this.onSubmit}
-                disabled={loading}
+                disabled={petsLoading}
               >
                 Add
               </Button>
@@ -126,7 +108,6 @@ Pets.propTypes = {
     fieldsContainer: PropTypes.string,
     buttonContainer: PropTypes.string,
   }).isRequired,
-  dispatch: PropTypes.func.isRequired,
   user: PropTypes.shape({
     className: PropTypes.string,
     id: PropTypes.string,
@@ -142,7 +123,7 @@ Pets.propTypes = {
     _objCount: PropTypes.number,
     get: PropTypes.func,
   })),
-  loading: PropTypes.bool.isRequired,
+  petsLoading: PropTypes.bool.isRequired,
 };
 
 Pets.defaultProps = {
@@ -150,4 +131,4 @@ Pets.defaultProps = {
   pets: [],
 };
 
-export default withRouter(connect(selectors)(withStyles(styles)(Pets)));
+export default withStyles(styles)(Pets);

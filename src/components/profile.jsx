@@ -1,10 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { withRouter } from 'react-router-dom';
-
-import { connect } from 'react-redux';
-
 import withStyles from '@material-ui/core/styles/withStyles';
 import spacing from '@material-ui/core/styles/spacing';
 
@@ -16,12 +12,6 @@ import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import Typography from '@material-ui/core/Typography';
 import Tooltip from '@material-ui/core/Tooltip';
-
-import { mapStateToProps } from '../utils';
-
-import { update, updateAvatar } from '../services/parse';
-
-import { getUser, getUserUpdatePending } from '../selectors';
 
 const styles = theme => ({
   avatarContainer: {
@@ -52,25 +42,20 @@ const styles = theme => ({
   },
 });
 
-const selectors = mapStateToProps({
-  user: getUser,
-  updating: getUserUpdatePending,
-});
-
 class Profile extends React.Component {
   constructor(props) {
     super(props);
 
     const { user } = this.props;
 
-    const email = user.getEmail();
-    const firstName = user.get('firstName');
-    const lastName = user.get('lastName');
-    const address = user.get('address');
-    const city = user.get('city');
-    const postalCode = user.get('postalCode');
-    const country = user.get('country');
-    const avatar = user.get('avatar') && user.get('avatar').url();
+    const email = user.getEmail && user.getEmail();
+    const firstName = user.get && user.get('firstName');
+    const lastName = user.get && user.get('lastName');
+    const address = user.get && user.get('address');
+    const city = user.get && user.get('city');
+    const postalCode = user.get && user.get('postalCode');
+    const country = user.get && user.get('country');
+    const avatar = user.get && user.get('avatar') && user.get('avatar').url();
 
     this.state = {
       email,
@@ -102,7 +87,7 @@ class Profile extends React.Component {
   }
 
   async onSubmit(e) {
-    const { dispatch, user } = this.props;
+    const { user, updateUser, updateUserAvatar } = this.props;
     const {
       email,
       firstName,
@@ -119,13 +104,13 @@ class Profile extends React.Component {
 
     e.preventDefault();
 
-    const oldEmail = user.getEmail();
-    const oldFirstName = user.get('firstName');
-    const oldLastName = user.get('lastName');
-    const oldAddress = user.get('address');
-    const oldCity = user.get('city');
-    const oldPostalCode = user.get('postalCode');
-    const oldCountry = user.get('country');
+    const oldEmail = user.getEmail && user.getEmail();
+    const oldFirstName = user.get && user.get('firstName');
+    const oldLastName = user.get && user.get('lastName');
+    const oldAddress = user.get && user.get('address');
+    const oldCity = user.get && user.get('city');
+    const oldPostalCode = user.get && user.get('postalCode');
+    const oldCountry = user.get && user.get('country');
 
     const changes = {};
 
@@ -162,11 +147,11 @@ class Profile extends React.Component {
     }
 
     if (avatarPreview) {
-      dispatch(updateAvatar(user, avatar));
+      updateUserAvatar(user, avatar);
     }
 
     if (changes) {
-      dispatch(update(user, changes));
+      updateUser(user, changes);
     }
   }
 
@@ -175,7 +160,7 @@ class Profile extends React.Component {
   }
 
   render() {
-    const { classes, user, updating } = this.props;
+    const { classes, user, updatingUser } = this.props;
     const {
       email,
       firstName,
@@ -202,7 +187,7 @@ class Profile extends React.Component {
             </Grid>
             <Grid item zeroMinWidth>
               <Typography component="h3" variant="subtitle1" noWrap>
-                {`${user.get('firstName')} ${user.get('lastName')}`}
+                {`${user.get && user.get('firstName')} ${user.get && user.get('lastName')}`}
               </Typography>
             </Grid>
           </Grid>
@@ -283,7 +268,7 @@ class Profile extends React.Component {
                     color="primary"
                     className={classes.submit}
                     onClick={this.onSubmit}
-                    disabled={updating}
+                    disabled={updatingUser}
                   >
                     Save
                   </Button>
@@ -304,7 +289,6 @@ Profile.propTypes = {
     fieldsContainer: PropTypes.string,
     buttonContainer: PropTypes.string,
   }).isRequired,
-  dispatch: PropTypes.func.isRequired,
   user: PropTypes.shape({
     className: PropTypes.string,
     id: PropTypes.string,
@@ -313,11 +297,13 @@ Profile.propTypes = {
     getEmail: PropTypes.func,
     get: PropTypes.func,
   }),
-  updating: PropTypes.bool.isRequired,
+  updateUser: PropTypes.func.isRequired,
+  updateUserAvatar: PropTypes.func.isRequired,
+  updatingUser: PropTypes.bool.isRequired,
 };
 
 Profile.defaultProps = {
   user: {},
 };
 
-export default withRouter(connect(selectors)(withStyles(styles)(Profile)));
+export default withStyles(styles)(Profile);

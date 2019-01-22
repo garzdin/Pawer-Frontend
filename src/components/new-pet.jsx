@@ -1,10 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { withRouter } from 'react-router-dom';
-
-import { connect } from 'react-redux';
-
 import withStyles from '@material-ui/core/styles/withStyles';
 import spacing from '@material-ui/core/styles/spacing';
 
@@ -16,12 +12,6 @@ import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import Typography from '@material-ui/core/Typography';
 import Tooltip from '@material-ui/core/Tooltip';
-
-import { mapStateToProps } from '../utils';
-
-import { createPet } from '../services/parse';
-
-import { getUser, getPetsLoading } from '../selectors';
 
 const styles = theme => ({
   avatarContainer: {
@@ -52,11 +42,6 @@ const styles = theme => ({
   },
 });
 
-const selectors = mapStateToProps({
-  user: getUser,
-  loading: getPetsLoading,
-});
-
 class NewPet extends React.Component {
   constructor(props) {
     super(props);
@@ -85,7 +70,7 @@ class NewPet extends React.Component {
   }
 
   async onSubmit(e) {
-    const { dispatch, user } = this.props;
+    const { createPet, user } = this.props;
     const {
       name,
       breed,
@@ -118,7 +103,7 @@ class NewPet extends React.Component {
     }
 
     if (changes) {
-      dispatch(createPet(changes));
+      createPet(changes);
     }
   }
 
@@ -127,7 +112,7 @@ class NewPet extends React.Component {
   }
 
   render() {
-    const { classes, loading } = this.props;
+    const { classes, petsLoading } = this.props;
     const {
       name,
       breed,
@@ -183,7 +168,7 @@ class NewPet extends React.Component {
                     color="primary"
                     className={classes.submit}
                     onClick={this.onSubmit}
-                    disabled={loading}
+                    disabled={petsLoading}
                   >
                     Save
                   </Button>
@@ -204,7 +189,6 @@ NewPet.propTypes = {
     fieldsContainer: PropTypes.string,
     buttonContainer: PropTypes.string,
   }).isRequired,
-  dispatch: PropTypes.func.isRequired,
   user: PropTypes.shape({
     className: PropTypes.string,
     id: PropTypes.string,
@@ -213,11 +197,12 @@ NewPet.propTypes = {
     getEmail: PropTypes.func,
     get: PropTypes.func,
   }),
-  loading: PropTypes.bool.isRequired,
+  petsLoading: PropTypes.bool.isRequired,
+  createPet: PropTypes.func.isRequired,
 };
 
 NewPet.defaultProps = {
   user: {},
 };
 
-export default withRouter(connect(selectors)(withStyles(styles)(NewPet)));
+export default withStyles(styles)(NewPet);
