@@ -35,7 +35,7 @@ import {
 import { mapStateToProps, mapDispatchToActions } from '../utils';
 
 import {
-  getUser, getUserUpdatePending, getPets, getPetsLoading, getPetById,
+  getUser, getUserUpdatePending, getPets, getPetsStatus, getPetById,
 } from '../selectors';
 
 const styles = theme => ({
@@ -81,7 +81,7 @@ const selectors = mapStateToProps({
   user: getUser,
   userUpdating: getUserUpdatePending,
   pets: getPets,
-  petsLoading: getPetsLoading,
+  petsStatus: getPetsStatus,
   pet: getPetById,
 });
 
@@ -96,17 +96,29 @@ const actions = mapDispatchToActions({
 
 class App extends React.Component {
   componentWillMount() {
-    const { user, loadPets } = this.props;
+    const {
+      user, pets, loadPets, petsStatus,
+    } = this.props;
 
-    if (user) {
+    if (user && pets.length === 0 && petsStatus === 'idle') {
+      loadPets(user);
+    }
+  }
+
+  componentWillUpdate(nextProps) {
+    const {
+      user, loadPets, petsStatus,
+    } = nextProps;
+
+    if (petsStatus === 'create_success' || petsStatus === 'update_success' || petsStatus === 'delete_success') {
       loadPets(user);
     }
   }
 
   render() {
     const {
-      classes, user, pets, petsLoading, loadPets, updateUser, updateUserAvatar, userUpdating,
-      createPet, updatePet, pet,
+      classes, user, pets, petsStatus, pet, loadPets, updateUser, updateUserAvatar, userUpdating,
+      createPet, updatePet, deletePet,
     } = this.props;
 
     return (
@@ -131,7 +143,7 @@ class App extends React.Component {
                 <Account
                   {...routeProps}
                   pets={pets}
-                  petsLoading={petsLoading}
+                  petsStatus={petsStatus}
                   loadPets={loadPets}
                   activeMenuItem="profile"
                 >
@@ -153,7 +165,7 @@ class App extends React.Component {
                 <Account
                   {...routeProps}
                   pets={pets}
-                  petsLoading={petsLoading}
+                  petsStatus={petsStatus}
                   loadPets={loadPets}
                   activeMenuItem="pets"
                 >
@@ -161,7 +173,7 @@ class App extends React.Component {
                     {...routeProps}
                     user={user}
                     pets={pets}
-                    petsLoading={petsLoading}
+                    petsStatus={petsStatus}
                   />
                 </Account>
               )}
@@ -174,7 +186,7 @@ class App extends React.Component {
                 <Account
                   {...routeProps}
                   pets={pets}
-                  petsLoading={petsLoading}
+                  petsStatus={petsStatus}
                   loadPets={loadPets}
                   activeMenuItem="pets"
                 >
@@ -182,7 +194,7 @@ class App extends React.Component {
                     {...routeProps}
                     user={user}
                     pets={pets}
-                    petsLoading={petsLoading}
+                    petsStatus={petsStatus}
                     createPet={createPet}
                   />
                 </Account>
@@ -196,19 +208,18 @@ class App extends React.Component {
                 <Account
                   {...routeProps}
                   pets={pets}
-                  petsLoading={petsLoading}
+                  petsStatus={petsStatus}
                   loadPets={loadPets}
                   activeMenuItem="pets"
                 >
-                  {!petsLoading && (
-                    <EditPet
-                      {...routeProps}
-                      user={user}
-                      pet={pet(routeProps.match.params.id)}
-                      petsLoading={petsLoading}
-                      updatePet={updatePet}
-                    />
-                  )}
+                  <EditPet
+                    {...routeProps}
+                    user={user}
+                    pet={pet(routeProps.match.params.id)}
+                    petsStatus={petsStatus}
+                    updatePet={updatePet}
+                    deletePet={deletePet}
+                  />
                 </Account>
               )
               }
@@ -256,7 +267,7 @@ App.propTypes = {
     _objCount: PropTypes.number,
   })).isRequired,
   pet: PropTypes.func.isRequired,
-  petsLoading: PropTypes.bool.isRequired,
+  petsStatus: PropTypes.string.isRequired,
   updateUser: PropTypes.func.isRequired,
   updateUserAvatar: PropTypes.func.isRequired,
   loadPets: PropTypes.func.isRequired,
