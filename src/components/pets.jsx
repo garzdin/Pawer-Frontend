@@ -36,9 +36,9 @@ const styles = theme => ({
 
 class Pets extends React.Component {
   renderPets() {
-    const { classes, pets, petsLoading } = this.props;
+    const { classes, pets, petsStatus } = this.props;
 
-    if (!petsLoading) {
+    if (petsStatus === 'load_success') {
       return pets.map(pet => (
         <Link key={() => pet.get('id')} to={`/account/pets/edit/${pet.id}/`} className={classes.link}>
           <ListItem>
@@ -58,16 +58,16 @@ class Pets extends React.Component {
   }
 
   render() {
-    const { classes, pets, petsLoading } = this.props;
+    const { classes, pets, petsStatus } = this.props;
 
     return (
       <Grid container direction="column" className={classes.container}>
-        {pets.length === 0 && petsLoading && (
+        {pets.length === 0 && petsStatus === 'load_request' && (
           <Grid item className={classes.infoLabel}>
             <Typography>Loading...</Typography>
           </Grid>
         )}
-        {pets.length === 0 && !petsLoading && (
+        {pets.length === 0 && petsStatus === 'load_success' && (
           <Grid item className={classes.infoLabel}>
             <Typography>No pets</Typography>
           </Grid>
@@ -82,14 +82,12 @@ class Pets extends React.Component {
         <Grid container className={classes.buttonContainer}>
           <Grid item xs={6} />
           <Grid item xs={6}>
-            <Link to="/account/pets/new/">
+            <Link to="/account/pets/new/" className={classes.link}>
               <Button
                 fullWidth
                 variant="contained"
                 color="primary"
                 className={classes.submit}
-                onClick={this.onSubmit}
-                disabled={petsLoading}
               >
                 Add
               </Button>
@@ -123,7 +121,7 @@ Pets.propTypes = {
     _objCount: PropTypes.number,
     get: PropTypes.func,
   })),
-  petsLoading: PropTypes.bool.isRequired,
+  petsStatus: PropTypes.string.isRequired,
 };
 
 Pets.defaultProps = {
