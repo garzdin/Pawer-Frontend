@@ -196,10 +196,8 @@ export function updatePet(id, fields) {
 
     const query = new Parse.Query(Pet);
 
-    query.equalTo('id', id);
-
     try {
-      const pet = await query.first();
+      const pet = await query.get(id);
 
       if (pet) {
         Object.keys(fields).forEach(field => pet.set(field, fields[field]));
