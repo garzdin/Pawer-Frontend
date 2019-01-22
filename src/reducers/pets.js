@@ -56,10 +56,10 @@ export default function (state = initialState, action) {
       return {
         ...state,
         loading: false,
-        pets: {
+        pets: [
           ...state.pets,
           pet,
-        },
+        ],
       };
     }
     case PET_CREATE_FAILURE: {
@@ -81,15 +81,15 @@ export default function (state = initialState, action) {
       const { pets } = state;
       const { pet } = action.payload;
 
-      const index = pets.indexOf(pet);
+      const index = pets.findIndex(statePet => statePet.id === pet.id);
+
+      const newPets = pets;
+      newPets[index] = pet;
 
       return {
         ...state,
         loading: false,
-        pets: {
-          ...state.pets,
-          [index]: pet,
-        },
+        pets: newPets,
       };
     }
     case PET_UPDATE_FAILURE: {
