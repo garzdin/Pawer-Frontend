@@ -46,28 +46,7 @@ class Profile extends React.Component {
   constructor(props) {
     super(props);
 
-    const { user } = this.props;
-
-    const email = user.getEmail && user.getEmail();
-    const firstName = user.get && user.get('firstName');
-    const lastName = user.get && user.get('lastName');
-    const address = user.get && user.get('address');
-    const city = user.get && user.get('city');
-    const postalCode = user.get && user.get('postalCode');
-    const country = user.get && user.get('country');
-    const avatar = user.get && user.get('avatar') && user.get('avatar').url();
-
     this.state = {
-      email,
-      firstName,
-      lastName,
-      address,
-      city,
-      postalCode,
-      country,
-      password: null,
-      repeatPassword: null,
-      avatar,
       avatarPreview: null,
     };
 
@@ -87,20 +66,8 @@ class Profile extends React.Component {
   }
 
   async onSubmit(e) {
-    const { user, updateUser, updateUserAvatar } = this.props;
-    const {
-      email,
-      firstName,
-      lastName,
-      address,
-      city,
-      postalCode,
-      country,
-      password,
-      repeatPassword,
-      avatar,
-      avatarPreview,
-    } = this.state;
+    const { user, updateUser } = this.props;
+    const { avatarPreview } = this.state;
 
     e.preventDefault();
 
@@ -111,6 +78,17 @@ class Profile extends React.Component {
     const oldCity = user.get && user.get('city');
     const oldPostalCode = user.get && user.get('postalCode');
     const oldCountry = user.get && user.get('country');
+
+    const email = this.email.value;
+    const firstName = this.firstName.value;
+    const lastName = this.lastName.value;
+    const address = this.address.value;
+    const city = this.city.value;
+    const postalCode = this.postalCode.value;
+    const country = this.country.value;
+    const password = this.password.value;
+    const repeatPassword = this.repeatPassword.value;
+    const avatar = this.avatar.files.length > 0 ? this.avatar.files[0] : null;
 
     const changes = {};
 
@@ -147,7 +125,7 @@ class Profile extends React.Component {
     }
 
     if (avatarPreview) {
-      updateUserAvatar(user, avatar);
+      changes.avatar = avatar;
     }
 
     if (changes) {
@@ -161,24 +139,23 @@ class Profile extends React.Component {
 
   render() {
     const { classes, user, updatingUser } = this.props;
-    const {
-      email,
-      firstName,
-      lastName,
-      address,
-      city,
-      postalCode,
-      country,
-      avatar,
-      avatarPreview,
-    } = this.state;
+    const { avatarPreview } = this.state;
+
+    const email = user.getEmail && user.getEmail();
+    const firstName = user.get && user.get('firstName');
+    const lastName = user.get && user.get('lastName');
+    const address = user.get && user.get('address');
+    const city = user.get && user.get('city');
+    const postalCode = user.get && user.get('postalCode');
+    const country = user.get && user.get('country');
+    const avatar = user.get && user.get('avatar') && user.get('avatar').url && user.get('avatar').url();
 
     return (
       <Grid container className={classes.container}>
         <Grid item xs={12} md={3} className={classes.avatarContainer}>
           <Grid container direction="column" alignItems="center">
             <Grid item>
-              <Input className={classes.avatarUploadField} ref={r => this.setRef('avatar', r)} onChange={e => this.onChange('avatar', e)} id="avatar" name="avatar" accept="image/*" type="file" />
+              <Input className={classes.avatarUploadField} inputRef={r => this.setRef('avatar', r)} onChange={e => this.onChange('avatar', e)} id="avatar" name="avatar" accept="image/*" type="file" />
               <InputLabel htmlFor="avatar">
                 <Tooltip title="Change" aria-label="Change" placement="top">
                   <Avatar alt={`${firstName} ${lastName}`} src={avatarPreview || avatar} className={classes.avatar} />
@@ -187,7 +164,7 @@ class Profile extends React.Component {
             </Grid>
             <Grid item zeroMinWidth>
               <Typography component="h3" variant="subtitle1" noWrap>
-                {`${user.get && user.get('firstName')} ${user.get && user.get('lastName')}`}
+                {`${firstName} ${lastName}`}
               </Typography>
             </Grid>
           </Grid>
@@ -198,20 +175,20 @@ class Profile extends React.Component {
             <Grid container direction="column">
               <FormControl margin="dense" required fullWidth>
                 <InputLabel htmlFor="email">Email Address</InputLabel>
-                <Input ref={r => this.setRef('email', r)} onChange={e => this.onChange('email', e)} id="email" name="email" autoComplete="email" value={email} disabled />
+                <Input key={email} inputRef={r => this.setRef('email', r)} id="email" name="email" autoComplete="email" defaultValue={email || ''} disabled />
               </FormControl>
               <Typography className={classes.sectionHeader}>Personal Information</Typography>
               <Grid container spacing={spacing.unit}>
                 <Grid item md={6} xs={12}>
                   <FormControl margin="dense" required fullWidth>
                     <InputLabel htmlFor="firstName">First Name</InputLabel>
-                    <Input ref={r => this.setRef('firstName', r)} onChange={e => this.onChange('firstName', e)} id="firstName" name="firstName" autoComplete="firstName" value={firstName} />
+                    <Input key={firstName} inputRef={r => this.setRef('firstName', r)} id="firstName" name="firstName" autoComplete="firstName" defaultValue={firstName || ''} />
                   </FormControl>
                 </Grid>
                 <Grid item md={6} xs={12}>
                   <FormControl margin="dense" required fullWidth>
                     <InputLabel htmlFor="lastName">Last Name</InputLabel>
-                    <Input ref={r => this.setRef('lastName', r)} onChange={e => this.onChange('lastName', e)} id="lastName" name="lastName" autoComplete="lastName" value={lastName} />
+                    <Input key={lastName} inputRef={r => this.setRef('lastName', r)} id="lastName" name="lastName" autoComplete="lastName" defaultValue={lastName || ''} />
                   </FormControl>
                 </Grid>
               </Grid>
@@ -219,13 +196,13 @@ class Profile extends React.Component {
                 <Grid item md={6} xs={12}>
                   <FormControl margin="dense" required fullWidth>
                     <InputLabel htmlFor="address">Address</InputLabel>
-                    <Input ref={r => this.setRef('address', r)} onChange={e => this.onChange('address', e)} id="address" name="address" autoComplete="address" value={address} />
+                    <Input key={address} inputRef={r => this.setRef('address', r)} id="address" name="address" autoComplete="address" defaultValue={address || ''} />
                   </FormControl>
                 </Grid>
                 <Grid item md={6} xs={12}>
                   <FormControl margin="dense" required fullWidth>
                     <InputLabel htmlFor="city">City</InputLabel>
-                    <Input ref={r => this.setRef('city', r)} onChange={e => this.onChange('city', e)} id="city" name="city" autoComplete="city" value={city} />
+                    <Input key={city} inputRef={r => this.setRef('city', r)} id="city" name="city" autoComplete="city" defaultValue={city || ''} />
                   </FormControl>
                 </Grid>
               </Grid>
@@ -233,13 +210,13 @@ class Profile extends React.Component {
                 <Grid item md={6} xs={12}>
                   <FormControl margin="dense" required fullWidth>
                     <InputLabel htmlFor="postalCode">Postal Code</InputLabel>
-                    <Input ref={r => this.setRef('postalCode', r)} onChange={e => this.onChange('postalCode', e)} id="postalCode" name="postalCode" autoComplete="postalCode" value={postalCode} />
+                    <Input key={postalCode} inputRef={r => this.setRef('postalCode', r)} id="postalCode" name="postalCode" autoComplete="postalCode" defaultValue={postalCode || ''} />
                   </FormControl>
                 </Grid>
                 <Grid item md={6} xs={12}>
                   <FormControl margin="dense" required fullWidth>
                     <InputLabel htmlFor="country">Country</InputLabel>
-                    <Input ref={r => this.setRef('country', r)} onChange={e => this.onChange('country', e)} id="country" name="country" autoComplete="country" value={country} />
+                    <Input key={country} inputRef={r => this.setRef('country', r)} id="country" name="country" autoComplete="country" defaultValue={country || ''} />
                   </FormControl>
                 </Grid>
               </Grid>
@@ -248,13 +225,13 @@ class Profile extends React.Component {
                 <Grid item md={6} xs={12}>
                   <FormControl margin="dense" required fullWidth>
                     <InputLabel htmlFor="password">Password</InputLabel>
-                    <Input ref={r => this.setRef('password', r)} onChange={e => this.onChange('password', e)} id="password" name="password" autoComplete="password" type="password" placeholder="•••••••••••••••••" />
+                    <Input inputRef={r => this.setRef('password', r)} id="password" name="password" type="password" placeholder="•••••••••••••••••" />
                   </FormControl>
                 </Grid>
                 <Grid item md={6} xs={12}>
                   <FormControl margin="dense" required fullWidth>
                     <InputLabel htmlFor="repeatPassword">Repeat Password</InputLabel>
-                    <Input ref={r => this.setRef('repeatPassword', r)} onChange={e => this.onChange('repeatPassword', e)} id="repeatPassword" name="repeatPassword" autoComplete="repeatPassword" type="password" placeholder="•••••••••••••••••" />
+                    <Input inputRef={r => this.setRef('repeatPassword', r)} id="repeatPassword" name="repeatPassword" type="password" placeholder="•••••••••••••••••" />
                   </FormControl>
                 </Grid>
               </Grid>
@@ -298,7 +275,6 @@ Profile.propTypes = {
     get: PropTypes.func,
   }),
   updateUser: PropTypes.func.isRequired,
-  updateUserAvatar: PropTypes.func.isRequired,
   updatingUser: PropTypes.bool.isRequired,
 };
 
