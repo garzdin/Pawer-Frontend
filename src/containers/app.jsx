@@ -107,10 +107,10 @@ class App extends React.Component {
 
   componentWillUpdate(nextProps) {
     const {
-      user, loadPets, petsStatus,
+      user, pets, loadPets, petsStatus,
     } = nextProps;
 
-    if (petsStatus === 'create_success' || petsStatus === 'update_success' || petsStatus === 'delete_success') {
+    if (user && ((pets.length === 0 && petsStatus === 'idle') || (petsStatus === 'create_success' || petsStatus === 'update_success' || petsStatus === 'delete_success'))) {
       loadPets(user);
     }
   }
