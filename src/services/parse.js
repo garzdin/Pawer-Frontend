@@ -200,7 +200,23 @@ export function updatePet(id, fields) {
       const pet = await query.get(id);
 
       if (pet) {
-        Object.keys(fields).forEach(field => pet.set(field, fields[field]));
+        const { name } = fields;
+
+        Object.keys(fields).forEach((field) => {
+          if (field === 'avatar') {
+            const image = new Parse.File(name, fields[field]);
+
+            try {
+              image.save();
+
+              pet.set('avatar', image);
+            } catch (error) {
+              dispatch(createPetFailure(error));
+            }
+          } else {
+            pet.set(field, fields[field]);
+          }
+        });
 
         await pet.save();
 
@@ -220,10 +236,8 @@ export function deletePet(id) {
 
     const query = new Parse.Query(Pet);
 
-    query.equalTo('id', id);
-
     try {
-      const pet = await query.first();
+      const pet = await query.get(id);
 
       if (pet) {
         await pet.destroy();
