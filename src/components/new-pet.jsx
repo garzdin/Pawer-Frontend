@@ -49,10 +49,6 @@ class NewPet extends React.Component {
     super(props);
 
     this.state = {
-      name: '',
-      breed: '',
-      info: '',
-      avatar: null,
       avatarPreview: null,
     };
 
@@ -66,23 +62,25 @@ class NewPet extends React.Component {
 
     if (file) {
       this.setState({ avatarPreview: URL.createObjectURL(file), [name]: file });
-    } else {
-      this.setState({ [name]: e.target.value });
     }
   }
 
   async onSubmit(e) {
     const { createPet, user } = this.props;
     const {
-      name,
-      breed,
-      info,
-      avatar,
+      avatarPreview,
     } = this.state;
 
     e.preventDefault();
 
     const changes = {};
+
+    const name = this.name.value;
+    const breed = this.breed.value;
+    const age = this.age.value;
+    const weight = this.weight.value;
+    const info = this.info.value;
+    const avatar = this.avatar.files.length > 0 ? this.avatar.files[0] : null;
 
     if (name) {
       changes.name = name;
@@ -104,6 +102,18 @@ class NewPet extends React.Component {
       changes.owner = user;
     }
 
+    if (age) {
+      changes.age = age;
+    }
+
+    if (weight) {
+      changes.weight = weight;
+    }
+
+    if (avatarPreview) {
+      changes.avatar = avatar;
+    }
+
     if (changes) {
       createPet(changes);
     }
@@ -115,13 +125,9 @@ class NewPet extends React.Component {
 
   render() {
     const { classes, petsStatus, location } = this.props;
-    const {
-      name,
-      breed,
-      info,
-      avatar,
-      avatarPreview,
-    } = this.state;
+    const { avatarPreview } = this.state;
+
+    const name = this.name && this.name.value;
 
     return (
       <React.Fragment>
@@ -137,10 +143,10 @@ class NewPet extends React.Component {
             <Grid item xs={12} md={3} className={classes.avatarContainer}>
               <Grid container direction="column" alignItems="center">
                 <Grid item>
-                  <Input className={classes.avatarUploadField} ref={r => this.setRef('avatar', r)} onChange={e => this.onChange('avatar', e)} id="avatar" name="avatar" accept="image/*" type="file" />
+                  <Input className={classes.avatarUploadField} inputRef={r => this.setRef('avatar', r)} onChange={e => this.onChange('avatar', e)} id="avatar" name="avatar" accept="image/*" type="file" />
                   <InputLabel htmlFor="avatar">
-                    <Tooltip title={avatar ? 'Change' : 'Add'} aria-label={avatar ? 'Change' : 'Add'} placement="top">
-                      <Avatar alt={`${name}`} src={avatarPreview || avatar} className={classes.avatar} />
+                    <Tooltip title={avatarPreview ? 'Change' : 'Add'} aria-label={avatarPreview ? 'Change' : 'Add'} placement="top">
+                      <Avatar alt={`${name}`} src={avatarPreview} className={classes.avatar} />
                     </Tooltip>
                   </InputLabel>
                 </Grid>
@@ -154,20 +160,34 @@ class NewPet extends React.Component {
                     <Grid item md={6} xs={12}>
                       <FormControl margin="dense" required fullWidth>
                         <InputLabel htmlFor="name">Name</InputLabel>
-                        <Input ref={r => this.setRef('name', r)} onChange={e => this.onChange('name', e)} id="name" name="name" autoComplete="name" value={name} />
+                        <Input inputRef={r => this.setRef('name', r)} id="name" name="name" autoComplete="name" />
                       </FormControl>
                     </Grid>
                     <Grid item md={6} xs={12}>
                       <FormControl margin="dense" required fullWidth>
                         <InputLabel htmlFor="breed">Breed</InputLabel>
-                        <Input ref={r => this.setRef('breed', r)} onChange={e => this.onChange('breed', e)} id="breed" name="breed" autoComplete="breed" value={breed} />
+                        <Input inputRef={r => this.setRef('breed', r)} id="breed" name="breed" autoComplete="breed" />
                       </FormControl>
                     </Grid>
                   </Grid>
                   <Typography className={classes.sectionHeader}>Pet Information</Typography>
+                  <Grid container spacing={spacing.unit}>
+                    <Grid item md={6} xs={12}>
+                      <FormControl margin="dense" required fullWidth>
+                        <InputLabel htmlFor="age">Age</InputLabel>
+                        <Input inputRef={r => this.setRef('age', r)} id="age" name="age" autoComplete="age" />
+                      </FormControl>
+                    </Grid>
+                    <Grid item md={6} xs={12}>
+                      <FormControl margin="dense" required fullWidth>
+                        <InputLabel htmlFor="weight">Weight</InputLabel>
+                        <Input inputRef={r => this.setRef('weight', r)} id="weight" name="weight" autoComplete="weight" />
+                      </FormControl>
+                    </Grid>
+                  </Grid>
                   <FormControl margin="dense" required fullWidth>
                     <InputLabel htmlFor="info">Info</InputLabel>
-                    <Input ref={r => this.setRef('info', r)} onChange={e => this.onChange('info', e)} id="info" name="info" autoComplete="info" value={info} />
+                    <Input inputRef={r => this.setRef('info', r)} id="info" name="info" autoComplete="info" />
                   </FormControl>
                   <Grid container className={classes.buttonContainer}>
                     <Grid item xs={6} />
