@@ -73,7 +73,7 @@ class NewPet extends React.Component {
 
     e.preventDefault();
 
-    const changes = {};
+    const fields = {};
 
     const name = this.name.value;
     const breed = this.breed.value;
@@ -83,39 +83,39 @@ class NewPet extends React.Component {
     const avatar = this.avatar.files.length > 0 ? this.avatar.files[0] : null;
 
     if (name) {
-      changes.name = name;
+      fields.name = name;
     }
 
     if (breed) {
-      changes.breed = breed;
+      fields.breed = breed;
     }
 
     if (info) {
-      changes.info = info;
+      fields.info = info;
     }
 
     if (avatar) {
-      changes.avatar = avatar;
+      fields.avatar = avatar;
     }
 
     if (user) {
-      changes.owner = user;
+      fields.owner = user;
     }
 
     if (age) {
-      changes.age = age;
+      fields.age = age;
     }
 
     if (weight) {
-      changes.weight = weight;
+      fields.weight = weight;
     }
 
     if (avatarPreview) {
-      changes.avatar = avatar;
+      fields.avatar = avatar;
     }
 
-    if (changes) {
-      createPet(changes);
+    if (fields) {
+      createPet(fields);
     }
   }
 

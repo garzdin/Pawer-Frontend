@@ -66,8 +66,18 @@ class SignIn extends React.Component {
     const email = this.email.value;
     const password = this.password.value;
 
-    if (email && password) {
-      signIn(email, password);
+    const fields = {};
+
+    if (email) {
+      fields.email = email;
+    }
+
+    if (password) {
+      fields.password = password;
+    }
+
+    if (fields) {
+      signIn(fields);
     }
   }
 

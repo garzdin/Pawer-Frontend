@@ -90,46 +90,46 @@ class Profile extends React.Component {
     const repeatPassword = this.repeatPassword.value;
     const avatar = this.avatar.files.length > 0 ? this.avatar.files[0] : null;
 
-    const changes = {};
+    const fields = {};
 
     if (email !== oldEmail) {
-      changes.email = email;
+      fields.email = email;
     }
 
     if (oldFirstName !== firstName) {
-      changes.firstName = firstName;
+      fields.firstName = firstName;
     }
 
     if (oldLastName !== lastName) {
-      changes.lastName = lastName;
+      fields.lastName = lastName;
     }
 
     if (oldAddress !== address) {
-      changes.address = address;
+      fields.address = address;
     }
 
     if (oldCity !== city) {
-      changes.city = city;
+      fields.city = city;
     }
 
     if (oldPostalCode !== postalCode) {
-      changes.postalCode = postalCode;
+      fields.postalCode = postalCode;
     }
 
     if (oldCountry !== country) {
-      changes.country = country;
+      fields.country = country;
     }
 
     if (password && password === repeatPassword) {
-      changes.password = password;
+      fields.password = password;
     }
 
     if (avatarPreview) {
-      changes.avatar = avatar;
+      fields.avatar = avatar;
     }
 
-    if (changes) {
-      updateUser(user, changes);
+    if (fields) {
+      updateUser(user, fields);
     }
   }
 

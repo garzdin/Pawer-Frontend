@@ -25,9 +25,9 @@ import { Redirect, withRouter } from 'react-router-dom';
 
 import { connect } from 'react-redux';
 
-import { mapStateToProps } from '../utils';
+import { mapStateToProps, mapDispatchToActions } from '../utils';
 
-import { signUp } from '../services/parse';
+import { signUp as signUpMethod } from '../services/parse';
 import { getUser, getSignUpPending, getSignUpError } from '../selectors';
 
 const styles = theme => ({
@@ -64,26 +64,18 @@ const selectors = mapStateToProps({
   error: getSignUpError,
 });
 
+const actions = mapDispatchToActions({
+  signUp: signUpMethod,
+});
+
 class SignUp extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       activeStep: 0,
-      email: '',
-      password: '',
-      repeatPassword: '',
-      firstName: '',
-      lastName: '',
-      address: '',
-      city: '',
-      postalCode: '',
-      country: '',
-      tosAccepted: false,
     };
 
-    this.onFieldChange = this.onFieldChange.bind(this);
-    this.onCheckboxChange = this.onCheckboxChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.setRef = this.setRef.bind(this);
     this.handleNext = this.handleNext.bind(this);
@@ -92,35 +84,62 @@ class SignUp extends React.Component {
     this.getStepContent = this.getStepContent.bind(this);
   }
 
-  onFieldChange(name, e) {
-    this.setState({ [name]: e.target.value });
-  }
-
-  onCheckboxChange(name, e) {
-    this.setState({ [name]: e.target.checked });
-  }
-
   async onSubmit(e) {
-    const { dispatch } = this.props;
-    const {
-      email,
-      password,
-      repeatPassword,
-      firstName,
-      lastName,
-      address,
-      city,
-      postalCode,
-      country,
-      tosAccepted,
-    } = this.state;
+    const { signUp } = this.props;
+
+    const email = this.email.value;
+    const password = this.password.value;
+    const repeatPassword = this.repeatPassword.value;
+    const firstName = this.firstName.value;
+    const lastName = this.lastName.value;
+    const address = this.address.value;
+    const city = this.city.value;
+    const postalCode = this.postalCode.value;
+    const country = this.country.value;
+    const tosAccepted = this.tosAccepted.checked;
 
     e.preventDefault();
 
-    if (email && password === repeatPassword && tosAccepted) {
-      dispatch(signUp(email, password, {
-        firstName, lastName, address, city, postalCode, country,
-      }));
+    const fields = {};
+
+    if (email) {
+      fields.email = email;
+    }
+
+    if (password && password === repeatPassword) {
+      fields.password = password;
+    }
+
+    if (firstName) {
+      fields.firstName = firstName;
+    }
+
+    if (lastName) {
+      fields.lastName = lastName;
+    }
+
+    if (address) {
+      fields.address = address;
+    }
+
+    if (city) {
+      fields.city = city;
+    }
+
+    if (postalCode) {
+      fields.postalCode = postalCode;
+    }
+
+    if (country) {
+      fields.country = country;
+    }
+
+    if (tosAccepted) {
+      fields.tosAccepted = tosAccepted;
+    }
+
+    if (fields) {
+      signUp(fields);
     }
   }
 
@@ -134,7 +153,7 @@ class SignUp extends React.Component {
 
   getStepContent() {
     const { classes } = this.props;
-    const { activeStep, tosAccepted } = this.state;
+    const { activeStep } = this.state;
 
     switch (activeStep) {
       case 0:
@@ -142,15 +161,15 @@ class SignUp extends React.Component {
           <React.Fragment>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="email">Email Address</InputLabel>
-              <Input ref={r => this.setRef('email', r)} onChange={e => this.onFieldChange('email', e)} id="email" name="email" autoComplete="email" autoFocus />
+              <Input ref={r => this.setRef('email', r)} id="email" name="email" autoComplete="email" autoFocus />
             </FormControl>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="password">Password</InputLabel>
-              <Input ref={r => this.setRef('password', r)} onChange={e => this.onFieldChange('password', e)} name="password" type="password" id="password" autoComplete="password" />
+              <Input ref={r => this.setRef('password', r)} name="password" type="password" id="password" autoComplete="password" />
             </FormControl>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="repeatPassword">Repeat Password</InputLabel>
-              <Input ref={r => this.setRef('repeatPassword', r)} onChange={e => this.onFieldChange('repeatPassword', e)} name="repeatPassword" type="password" id="repeatPassword" autoComplete="repeatPassword" />
+              <Input ref={r => this.setRef('repeatPassword', r)} name="repeatPassword" type="password" id="repeatPassword" autoComplete="repeatPassword" />
             </FormControl>
           </React.Fragment>
         );
@@ -159,27 +178,27 @@ class SignUp extends React.Component {
           <React.Fragment>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="firstName">First Name</InputLabel>
-              <Input ref={r => this.setRef('firstName', r)} onChange={e => this.onFieldChange('firstName', e)} id="firstName" name="firstName" autoComplete="firstName" />
+              <Input ref={r => this.setRef('firstName', r)} id="firstName" name="firstName" autoComplete="firstName" />
             </FormControl>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="lastName">Last Name</InputLabel>
-              <Input ref={r => this.setRef('lastName', r)} onChange={e => this.onFieldChange('lastName', e)} name="lastName" id="lastName" autoComplete="lastName" />
+              <Input ref={r => this.setRef('lastName', r)} name="lastName" id="lastName" autoComplete="lastName" />
             </FormControl>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="address">Address</InputLabel>
-              <Input ref={r => this.setRef('address', r)} onChange={e => this.onFieldChange('address', e)} name="address" id="address" autoComplete="address" />
+              <Input ref={r => this.setRef('address', r)} name="address" id="address" autoComplete="address" />
             </FormControl>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="city">City</InputLabel>
-              <Input ref={r => this.setRef('city', r)} onChange={e => this.onFieldChange('city', e)} name="city" id="city" autoComplete="city" />
+              <Input ref={r => this.setRef('city', r)} name="city" id="city" autoComplete="city" />
             </FormControl>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="postalCode">Postal Code</InputLabel>
-              <Input ref={r => this.setRef('postalCode', r)} onChange={e => this.onFieldChange('postalCode', e)} name="postalCode" id="postalCode" autoComplete="postalCode" />
+              <Input ref={r => this.setRef('postalCode', r)} name="postalCode" id="postalCode" autoComplete="postalCode" />
             </FormControl>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="country">Country</InputLabel>
-              <Input ref={r => this.setRef('country', r)} onChange={e => this.onFieldChange('country', e)} name="country" id="country" autoComplete="country" />
+              <Input ref={r => this.setRef('country', r)} name="country" id="country" autoComplete="country" />
             </FormControl>
           </React.Fragment>
         );
@@ -199,8 +218,7 @@ class SignUp extends React.Component {
               <FormControlLabel
                 control={(
                   <Checkbox
-                    checked={tosAccepted}
-                    onChange={e => this.onCheckboxChange('tosAccepted', e)}
+                    inputRef={r => this.setRef('tosAccepted', r)}
                     value="tosAccepted"
                   />
                 )}
@@ -296,7 +314,7 @@ class SignUp extends React.Component {
 }
 
 SignUp.propTypes = {
-  dispatch: PropTypes.func.isRequired,
+  signUp: PropTypes.func.isRequired,
   classes: PropTypes.shape({
     paper: PropTypes.string,
     form: PropTypes.string,
@@ -321,4 +339,4 @@ SignUp.defaultProps = {
   user: {},
 };
 
-export default withRouter(connect(selectors)(withStyles(styles)(SignUp)));
+export default withRouter(connect(selectors, actions)(withStyles(styles)(SignUp)));
