@@ -37,30 +37,13 @@ const Pet = Parse.Object.extend('Pet', {
 
 export const currentUser = Parse.User.current();
 
-export function signUp(email, password, options) {
+export function signUp(fields) {
   return async (dispatch) => {
     dispatch(signUpRequest());
 
-    const {
-      firstName,
-      lastName,
-      address,
-      city,
-      postalCode,
-      country,
-    } = options;
-
     const user = new Parse.User();
 
-    user.set('username', email);
-    user.set('password', password);
-    user.set('email', email);
-    user.set('firstName', firstName);
-    user.set('lastName', lastName);
-    user.set('address', address);
-    user.set('city', city);
-    user.set('postalCode', postalCode);
-    user.set('country', country);
+    Object.keys(fields).forEach(field => user.set(field, fields[field]));
 
     try {
       await user.signUp();
@@ -72,12 +55,14 @@ export function signUp(email, password, options) {
   };
 }
 
-export function signIn(username, password) {
+export function signIn(fields) {
   return async (dispatch) => {
     try {
       dispatch(signInRequest());
 
-      const user = await Parse.User.logIn(username, password);
+      const { email, password } = fields;
+
+      const user = await Parse.User.logIn(email, password);
 
       dispatch(signInSuccess(user));
     } catch (error) {
