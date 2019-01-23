@@ -14,9 +14,9 @@ import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import Button from '@material-ui/core/Button';
 
-import { mapStateToProps } from '../utils';
+import { mapStateToProps, mapDispatchToActions } from '../utils';
 
-import { signIn } from '../services/parse';
+import { signIn as signInMethod } from '../services/parse';
 
 import { getUser, getSignInPending, getSignInError } from '../selectors';
 
@@ -46,33 +46,28 @@ const selectors = mapStateToProps({
   error: getSignInError,
 });
 
+const actions = mapDispatchToActions({
+  signIn: signInMethod,
+});
+
 class SignIn extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      email: null,
-      password: null,
-    };
-
-    this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.setRef = this.setRef.bind(this);
   }
 
-
-  onChange(name, e) {
-    this.setState({ [name]: e.target.value });
-  }
-
   async onSubmit(e) {
-    const { dispatch } = this.props;
-    const { email, password } = this.state;
+    const { signIn } = this.props;
 
     e.preventDefault();
 
+    const email = this.email.value;
+    const password = this.password.value;
+
     if (email && password) {
-      dispatch(signIn(email, password));
+      signIn(email, password);
     }
   }
 
@@ -103,11 +98,11 @@ class SignIn extends React.Component {
           <form className={classes.form} onSubmit={e => e.preventDefault()}>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="email">Email Address</InputLabel>
-              <Input ref={r => this.setRef('email', r)} onChange={e => this.onChange('email', e)} id="email" name="email" autoComplete="email" autoFocus />
+              <Input inputRef={r => this.setRef('email', r)} id="email" name="email" autoComplete="email" autoFocus />
             </FormControl>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="password">Password</InputLabel>
-              <Input ref={r => this.setRef('password', r)} onChange={e => this.onChange('password', e)} name="password" type="password" id="password" autoComplete="current-password" />
+              <Input inputRef={r => this.setRef('password', r)} name="password" type="password" id="password" autoComplete="password" />
             </FormControl>
             <Button
               type="submit"
@@ -134,7 +129,7 @@ SignIn.propTypes = {
     form: PropTypes.string,
     submit: PropTypes.string,
   }).isRequired,
-  dispatch: PropTypes.func.isRequired,
+  signIn: PropTypes.func.isRequired,
   location: PropTypes.shape({
     key: PropTypes.string,
     pathname: PropTypes.string,
@@ -161,4 +156,4 @@ SignIn.defaultProps = {
   user: {},
 };
 
-export default withRouter(connect(selectors)(withStyles(styles)(SignIn)));
+export default withRouter(connect(selectors, actions)(withStyles(styles)(SignIn)));
